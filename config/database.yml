@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: historica
+  password: historica
+  host: localhost
+  port: 5432
+
+development:
+  <<: *default
+  database: historica_development
+
+test:
+  <<: *default
+  database: historica_test
+
+production:
+  <<: *default
+  database: historica_production
+  username: geocoded
+  password: <%= ENV["HISTORICA_DATABASE_PASSWORD"] %>
