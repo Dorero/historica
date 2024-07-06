@@ -1,0 +1,17 @@
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - 'db/**/*'
+    - 'log/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+    - 'public/**/*'
+    - 'spec/**/*'
+    - 'config/**/*'
+    - 'bin/**/*'
+    - "Rakefile"
+    - "config.ru"
+
+Style/Documentation:
+  Enabled: false
