@@ -1,0 +1,106 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/sign_in":
+    post:
+      summary: Sign in
+      tags:
+      - Auth
+      parameters: []
+      responses:
+        '200':
+          description: User sign in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  expires_at:
+                    type: string
+                    format: date-time
+                required:
+                - token
+                - expires_at
+        '401':
+          description: Enter invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                handle:
+                  type: string
+                password:
+                  type: string
+              required:
+              - handle
+              - password
+  "/sign_up":
+    post:
+      summary: Sign up
+      tags:
+      - Auth
+      parameters: []
+      responses:
+        '200':
+          description: User sign up
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  expires_at:
+                    type: string
+                    format: date-time
+                required:
+                - token
+                - expires_at
+        '401':
+          description: User already register
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                handle:
+                  type: string
+                password:
+                  type: string
+              required:
+              - first_name
+              - handle
+              - password
+servers:
+- url: http://localhost:3000
+  description: Local server
