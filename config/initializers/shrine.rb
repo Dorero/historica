@@ -2,7 +2,7 @@ require "shrine"
 require "shrine/storage/file_system"
 require "shrine/storage/memory"
 
-if Rails.env == 'test'
+if Rails.env.test?
   Shrine.storages = {
     cache: Shrine::Storage::Memory.new,
     store: Shrine::Storage::Memory.new
