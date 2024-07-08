@@ -21,12 +21,12 @@ RSpec.describe 'Auth API', type: :request do
                  token: { type: :string },
                  expires_at: { type: :string, format: 'date-time' }
                },
-               required: [ 'token', 'expires_at' ]
+               required: ['token', 'expires_at']
 
         let(:sign_in) { { handle: user.handle, password: user.password } }
 
         run_test! do |response|
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(:ok)
         end
       end
 
@@ -35,12 +35,12 @@ RSpec.describe 'Auth API', type: :request do
                properties: {
                  error: { type: :string },
                },
-               required: [ 'error' ]
+               required: ['error']
 
-        let(:sign_in) { { handle:Faker::Name.first_name, password: Faker::Internet.password } }
+        let(:sign_in) { { handle: Faker::Name.first_name, password: Faker::Internet.password } }
 
         run_test! do |response|
-          expect(response.status).to eq(401)
+          expect(response).to have_http_status(:unauthorized)
         end
       end
     end
@@ -49,14 +49,13 @@ RSpec.describe 'Auth API', type: :request do
   path '/sign_up' do
     post 'Sign up' do
       tags 'Auth'
-      consumes 'application/json'
+      consumes 'multipart/form-data'
       produces 'application/json'
-      parameter name: :sign_up, in: :body, schema: { type: :object, properties: {
-        first_name: { type: :string },
-        last_name: { type: :string },
-        handle: { type: :string },
-        password: { type: :string }
-      }, required: ['first_name', 'handle', 'password'] }
+      parameter name: :first_name, in: :formData, type: :string, required: true
+      parameter name: :last_name, in: :formData, type: :string
+      parameter name: :handle, in: :formData, type: :string, required: true
+      parameter name: :password, in: :formData, type: :string, required: true
+      parameter name: :photos, in: :formData, type: :array, items: { type: :file }
 
       response '200', "User sign up" do
         schema type: :object,
@@ -64,12 +63,20 @@ RSpec.describe 'Auth API', type: :request do
                  token: { type: :string },
                  expires_at: { type: :string, format: 'date-time' }
                },
-               required: [ 'token', 'expires_at' ]
+               required: ['token', 'expires_at']
 
-        let(:sign_up) { { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, handle: Faker::Name.name, password: Faker::Internet.password } }
+        let(:first_name) { Faker::Name.first_name }
+        let(:last_name) { Faker::Name.last_name }
+        let(:handle) { Faker::Name.name }
+        let(:password) { Faker::Internet.password }
+        let(:photos) do
+          [
+            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
+          ]
+        end
 
         run_test! do |response|
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(:ok)
         end
       end
 
@@ -78,13 +85,21 @@ RSpec.describe 'Auth API', type: :request do
                properties: {
                  error: { type: :string },
                },
-               required: [ 'error' ]
-        let!(:user) {create(:user) }
+               required: ['error']
+        let!(:user) { create(:user) }
 
-        let(:sign_up) { { first_name: user.first_name, last_name: user.last_name, handle: user.handle, password: user.password } }
+        let(:first_name) { user.first_name }
+        let(:last_name) { user.last_name }
+        let(:handle) { user.handle }
+        let(:password) { user.password }
+        let(:photos) do
+          [
+            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
+          ]
+        end
 
         run_test! do |response|
-          expect(response.status).to eq(401)
+          expect(response).to have_http_status(:unauthorized)
         end
       end
     end
