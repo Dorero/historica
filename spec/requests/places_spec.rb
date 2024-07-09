@@ -1,5 +1,7 @@
 require 'rails_helper'
 require 'swagger_helper'
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
 
 RSpec.describe "Places", type: :request do
   path '/places' do
@@ -38,11 +40,43 @@ RSpec.describe "Places", type: :request do
         end
 
         run_test! do |response|
+          assert_equal 1, PromoteJob.jobs.size
           expect(response).to have_http_status(:created)
         end
       end
 
+      response '422', "Invalid image extension" do
+        before { PromoteJob.clear }
+
+        schema type: :object,
+               properties: {
+                 errors: { type: :object },
+               },
+               required: ['errors']
+
+        let(:authorization) { "Bearer #{JwtService.encode(user_id: user.id)}" }
+        let(:title) { Faker::Name.name }
+        let(:description) { Faker::Name.name }
+        let(:date) { Faker::Time.backward(days: 10).to_i }
+        let(:latitude) { Faker::Address.latitude }
+        let(:longitude) { Faker::Address.longitude }
+        let(:photos) do
+          [
+            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.pdf'), 'image/jpeg')
+          ]
+        end
+
+        run_test! do |response|
+          assert_equal 0, PromoteJob.jobs.size
+          errors = JSON.parse(response.body)['errors']
+          expect(errors["photos.image"].first).to eq("extension must be one of: jpg, jpeg, png, webp")
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
+
       response '422', "Enter invalid credentials" do
+        before { PromoteJob.clear }
+
         schema type: :object,
                properties: {
                  errors: { type: :object },
@@ -62,6 +96,7 @@ RSpec.describe "Places", type: :request do
         end
 
         run_test! do |response|
+          assert_equal 0, PromoteJob.jobs.size
           errors = JSON.parse(response.body)['errors']
           expect(errors['title']).to include("can't be blank")
           expect(errors['latitude']).to include("can't be blank", "is not a number")

@@ -17,6 +17,6 @@ end
 
 Shrine.plugin :activerecord
 Shrine.plugin :restore_cached_data
-Shrine.plugin :cached_attachment_data
 Shrine.plugin :derivatives, create_on_promote: true
 Shrine.plugin :validation_helpers
+Shrine.plugin :backgrounding
