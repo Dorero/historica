@@ -1,5 +1,7 @@
 require 'rails_helper'
 require 'swagger_helper'
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
 
 RSpec.describe 'Auth', type: :request do
   path '/sign_in' do
@@ -74,11 +76,43 @@ RSpec.describe 'Auth', type: :request do
         end
 
         run_test! do |response|
+          assert_equal 1, PromoteJob.jobs.size
           expect(response).to have_http_status(:ok)
         end
       end
 
-      response '401', "User already register" do
+      response '422', "Invalid image extension" do
+        before { PromoteJob.clear }
+
+        schema type: :object,
+               properties: {
+                 errors: { type: :object },
+               },
+               required: ['errors']
+        let!(:user) { create(:user) }
+
+        let(:first_name) { Faker::Name.first_name }
+        let(:last_name) { Faker::Name.last_name }
+        let(:handle) { Faker::Name.name }
+        let(:password) { Faker::Internet.password }
+        let(:photos) do
+          [
+            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.pdf'), 'image/jpeg')
+          ]
+        end
+
+        run_test! do |response|
+          assert_equal 0, PromoteJob.jobs.size
+          errors = JSON(response.body)
+          expect(errors["errors"]["photos.image"].first).to eq("extension must be one of: jpg, jpeg, png, webp")
+          expect(errors["errors"]["photos"].first).to eq("is invalid")
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
+
+      response '422', "User already register" do
+        before { PromoteJob.clear }
+
         schema type: :object,
                properties: {
                  errors: { type: :object },
@@ -97,9 +131,10 @@ RSpec.describe 'Auth', type: :request do
         end
 
         run_test! do |response|
+          assert_equal 0, PromoteJob.jobs.size
           errors = JSON(response.body)
           expect(errors["errors"]["handle"].first).to eq("has already been taken")
-          expect(response).to have_http_status(:unauthorized)
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end

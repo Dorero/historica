@@ -15,8 +15,19 @@ services:
     networks:
       - historica_network
 
+  redis:
+    image: redis:7.0-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_data:/data
+    networks:
+      - historica_network
+
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   historica_network:
