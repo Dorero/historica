@@ -258,6 +258,77 @@ RSpec.describe "Places", type: :request do
           expect(response).to have_http_status(:unauthorized)
         end
       end
+
+      response '404', "Place not found" do
+        let(:id) { -1 }
+        let(:title) { "" }
+        let(:description) { Faker::Name.name }
+        let(:date) { "" }
+        let(:latitude) { "" }
+        let(:longitude) { "" }
+        let(:photos) do
+          [
+            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
+          ]
+        end
+
+        run_test! do |response|
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+    end
+
+    get "Show place" do
+      tags 'Places'
+      produces 'application/json'
+
+      parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
+      parameter name: :id, in: :path, type: :string, description: 'Id of the place'
+
+      response '200', "Show place" do
+        schema type: :object,
+               properties: {
+                 body: { type: :object },
+               },
+               required: ['body']
+
+        let!(:place) { create(:place) }
+
+        let(:id) { place.id }
+
+        run_test! do |response|
+          data = JSON(response.body)["body"]
+          expect(data["title"]).to eq(place.title)
+          expect(data["description"]).to eq(place.description)
+          expect(data["date"]).to eq(place.date)
+          expect(data["latitude"]).to eq(place.latitude)
+          expect(data["longitude"]).to eq(place.longitude)
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      response '401', "Invalid token" do
+        schema type: :object,
+               properties: {
+                 errors: { type: :string },
+               },
+               required: ['errors']
+
+        let(:authorization) { "Bearer invalid token" }
+        let(:id) { -1 }
+
+        run_test! do |response|
+          expect(response).to have_http_status(:unauthorized)
+        end
+      end
+
+      response '404', "Place not found" do
+        let(:id) { -1 }
+
+        run_test! do |response|
+          expect(response).to have_http_status(:not_found)
+        end
+      end
     end
   end
 end

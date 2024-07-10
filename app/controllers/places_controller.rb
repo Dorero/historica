@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 class PlacesController < ApplicationController
+
+  def show
+    return head :not_found unless Place.exists?(params[:id])
+
+    render json: { body: Place.find(params[:id]).as_json(methods: :image_urls, include: { photos: { only: [:id] } }) },
+           status: :ok
+  end
+
   def create
     # Images are loading in the background
     place = Place.create(
