@@ -57,7 +57,7 @@ RSpec.describe 'Auth', type: :request do
       parameter name: :password, in: :formData, type: :string, required: true
       parameter name: :photos, in: :formData, type: :array, items: { type: :file }
 
-      response '200', "User sign up" do
+      response '201', "User sign up" do
         schema type: :object,
                properties: {
                  token: { type: :string },
@@ -76,8 +76,14 @@ RSpec.describe 'Auth', type: :request do
         end
 
         run_test! do |response|
-          assert_equal 1, PromoteJob.jobs.size
-          expect(response).to have_http_status(:ok)
+          data = JSON(response.body)["body"]
+          expect(data["first_name"]).to eq(first_name)
+          expect(data["photos"].first["id"]).not_to eq(nil)
+          expect(data["last_name"]).to eq(last_name)
+          expect(data["handle"]).to eq(handle)
+          expect(data["image_urls"].first).not_to eq(nil)
+          expect(PromoteJob.jobs.size).to eq(1)
+          expect(response).to have_http_status(:created)
         end
       end
 
@@ -102,7 +108,7 @@ RSpec.describe 'Auth', type: :request do
         end
 
         run_test! do |response|
-          assert_equal 0, PromoteJob.jobs.size
+          expect(PromoteJob.jobs.size).to eq(0)
           errors = JSON(response.body)
           expect(errors["errors"]["photos.image"].first).to eq("extension must be one of: jpg, jpeg, png, webp")
           expect(errors["errors"]["photos"].first).to eq("is invalid")
@@ -131,7 +137,7 @@ RSpec.describe 'Auth', type: :request do
         end
 
         run_test! do |response|
-          assert_equal 0, PromoteJob.jobs.size
+          expect(PromoteJob.jobs.size).to eq(0)
           errors = JSON(response.body)
           expect(errors["errors"]["handle"].first).to eq("has already been taken")
           expect(response).to have_http_status(:unprocessable_entity)

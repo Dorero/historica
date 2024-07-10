@@ -28,8 +28,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_08_133634) do
     t.string "title", null: false
     t.text "description"
     t.integer "date", null: false
-    t.decimal "latitude", precision: 10, scale: 7, null: false
-    t.decimal "longitude", precision: 10, scale: 7, null: false
+    t.float "latitude", null: false
+    t.float "longitude", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
