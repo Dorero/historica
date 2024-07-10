@@ -16,6 +16,18 @@ class PlacesController < ApplicationController
     end
   end
 
+  def update
+    return head :not_found unless Place.exists?(params[:id])
+
+    place = Place.update(params[:id], permit_params.except(:photos))
+
+    if place.save
+      render json: { body: place.as_json(methods: :image_urls, include: { photos: { only: [:id] } }) }, status: :ok
+    else
+      render json: { errors: place.errors.messages }, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     return head :not_found unless Place.exists?(params[:id])
 
