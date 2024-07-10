@@ -16,12 +16,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_08_133634) do
 
   create_table "photos", force: :cascade do |t|
     t.jsonb "image_data", default: {}, null: false
-    t.string "imageble_type", null: false
-    t.bigint "imageble_id", null: false
+    t.string "imageable_type", null: false
+    t.bigint "imageable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["image_data"], name: "index_photos_on_image_data", using: :gin
-    t.index ["imageble_type", "imageble_id"], name: "index_photos_on_imageble"
+    t.index ["imageable_type", "imageable_id"], name: "index_photos_on_imageable"
   end
 
   create_table "places", force: :cascade do |t|
