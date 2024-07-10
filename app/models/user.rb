@@ -9,8 +9,4 @@ class User < ApplicationRecord
   validates_presence_of :first_name, :handle, :password
   validates_uniqueness_of :handle
   validates_associated :photos
-
-  def image_urls
-    photos.map { |photo| photo.image.url }
-  end
 end

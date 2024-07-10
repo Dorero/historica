@@ -42,12 +42,12 @@ RSpec.describe "Places", type: :request do
         run_test! do |response|
           data = JSON(response.body)["body"]
           expect(data["photos"].first["id"]).not_to eq(nil)
+          expect(data["photos"].first["url"]).not_to eq(nil)
           expect(data["title"]).to eq(title)
           expect(data["description"]).to eq(description)
           expect(data["date"]).to eq(date)
           expect(data["latitude"]).to eq(latitude)
           expect(data["longitude"]).to eq(longitude)
-          expect(data["image_urls"].first).not_to eq(nil)
           expect(PromoteJob.jobs.size).to eq(1)
           expect(response).to have_http_status(:created)
         end
@@ -217,11 +217,6 @@ RSpec.describe "Places", type: :request do
         let(:date) { Faker::Time.backward(days: 10).to_i }
         let(:latitude) { Faker::Address.latitude }
         let(:longitude) { Faker::Address.longitude }
-        let(:photos) do
-          [
-            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
-          ]
-        end
 
         run_test! do |response|
           data = JSON(response.body)["body"]
