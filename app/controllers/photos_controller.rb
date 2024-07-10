@@ -1,5 +1,6 @@
-class PhotosController < ApplicationController
+# frozen_string_literal: true
 
+class PhotosController < ApplicationController
   def create
     imageable = nil
     imageable = User.find(params[:image_for_id]) if User.exists?(params[:image_for_id])
@@ -7,7 +8,7 @@ class PhotosController < ApplicationController
 
     return render json: { errors: 'No such user or place found' }, status: :not_found if imageable.nil?
 
-    photo = Photo.create(permit_params.except(:image_for_id).merge(imageable: imageable))
+    photo = Photo.create(permit_params.except(:image_for_id).merge(imageable:))
 
     if photo.save
       render json: { body: photo.as_json(methods: :url) }, status: :created

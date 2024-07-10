@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class PlacesController < ApplicationController
-
   def show
     return head :not_found unless Place.exists?(params[:id])
 

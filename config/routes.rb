@@ -16,4 +16,5 @@ Rails.application.routes.draw do
 
   resources :places
   resources :photos
+  resources :users, only: [:show]
 end
