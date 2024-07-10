@@ -5,7 +5,7 @@ class PlacesController < ApplicationController
   def show
     return head :not_found unless Place.exists?(params[:id])
 
-    render json: { body: Place.find(params[:id]).as_json(methods: :image_urls, include: { photos: { only: [:id] } }) },
+    render json: { body: Place.find(params[:id]).as_json(include: { photos: { only: [:id], methods: :url } }) },
            status: :ok
   end
 
@@ -18,7 +18,7 @@ class PlacesController < ApplicationController
     )
 
     if place.save
-      render json: { body: place.as_json(methods: :image_urls, include: { photos: { only: [:id] } }) }, status: :created
+      render json: { body: place.as_json(include: { photos: { only: [:id], methods: :url } }) }, status: :created
     else
       render json: { errors: place.errors.messages }, status: :unprocessable_entity
     end
@@ -30,7 +30,7 @@ class PlacesController < ApplicationController
     place = Place.update(params[:id], permit_params.except(:photos))
 
     if place.save
-      render json: { body: place.as_json(methods: :image_urls, include: { photos: { only: [:id] } }) }, status: :ok
+      render json: { body: place.as_json(include: { photos: { only: [:id], methods: :url } }) }, status: :ok
     else
       render json: { errors: place.errors.messages }, status: :unprocessable_entity
     end

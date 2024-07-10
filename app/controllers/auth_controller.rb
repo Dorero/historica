@@ -25,7 +25,7 @@ class AuthController < ApplicationController
       render json: {
         token: JwtService.encode(user_id: user.id),
         expires_at: 24.hours.from_now,
-        body: user.as_json(methods: :image_urls, include: { photos: { only: [:id] } })
+        body: user.as_json(include: { photos: { only: [:id], methods: :url } })
       }, status: :created
     else
       render json: { errors: user.errors.messages }, status: :unprocessable_entity

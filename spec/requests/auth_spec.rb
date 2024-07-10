@@ -79,9 +79,9 @@ RSpec.describe 'Auth', type: :request do
           data = JSON(response.body)["body"]
           expect(data["first_name"]).to eq(first_name)
           expect(data["photos"].first["id"]).not_to eq(nil)
+          expect(data["photos"].first["url"]).not_to eq(nil)
           expect(data["last_name"]).to eq(last_name)
           expect(data["handle"]).to eq(handle)
-          expect(data["image_urls"].first).not_to eq(nil)
           expect(PromoteJob.jobs.size).to eq(1)
           expect(response).to have_http_status(:created)
         end

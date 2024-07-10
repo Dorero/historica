@@ -6,4 +6,8 @@ class Photo < ApplicationRecord
   belongs_to :imageable, polymorphic: true
 
   validates :image, presence: true
+
+  def url
+    image.url
+  end
 end
