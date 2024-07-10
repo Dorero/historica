@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Place < ApplicationRecord
-  has_many :photos, as: :imageble, dependent: :destroy
+  has_many :photos, as: :imageable, dependent: :destroy
   accepts_nested_attributes_for :photos, allow_destroy: true
 
   validates_presence_of :title, :latitude, :longitude, :date
