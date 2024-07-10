@@ -15,12 +15,18 @@ class AuthController < ApplicationController
 
   def sign_up
     # Images are loading in the background
-    user = User.new(permit_params.except(:photos).merge(photos_attributes: permit_params[:photos].map do |file|
-                                                                             { image: file }
-                                                                           end))
+    user = User.new(
+      permit_params.except(:photos).merge(
+        photos_attributes: permit_params[:photos].map { |file| { image: file } }
+      )
+    )
 
     if user.save
-      render json: { token: JwtService.encode(user_id: user.id), expires_at: 24.hours.from_now }, status: :ok
+      render json: {
+        token: JwtService.encode(user_id: user.id),
+        expires_at: 24.hours.from_now,
+        body: user.as_json(methods: :image_urls, include: { photos: { only: [:id] } })
+      }, status: :created
     else
       render json: { errors: user.errors.messages }, status: :unprocessable_entity
     end

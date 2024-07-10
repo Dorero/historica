@@ -15,14 +15,14 @@ class ApplicationController < ActionController::API
 
     return if User.exists?(decoded_token['user_id'])
 
-    render json: { error: 'unauthorized' }, status: :unauthorized
+    render json: { errors: 'unauthorized' }, status: :unauthorized
   end
 
   def invalid_token
-    render json: { invalid_token: 'invalid token' }
+    render json: { errors: 'invalid token' }, status: :unauthorized
   end
 
   def decode_error
-    render json: { decode_error: 'decode error' }
+    render json: { errors: 'decode error' }, status: :unauthorized
   end
 end
