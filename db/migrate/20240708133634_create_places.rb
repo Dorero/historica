@@ -4,8 +4,7 @@ class CreatePlaces < ActiveRecord::Migration[7.1]
       t.string :title, null: false
       t.text :description
       t.integer :date, null: false
-      t.float :latitude, null: false
-      t.float :longitude, null: false
+      t.jsonb :_geo, null: false, default: { lat: 0.0, lng: 0.0 }
 
       t.timestamps
     end

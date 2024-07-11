@@ -33,23 +33,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  error:
+                  errors:
                     type: string
                 required:
-                - error
+                - errors
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              type: object
-              properties:
-                handle:
-                  type: string
-                password:
-                  type: string
-              required:
-              - handle
-              - password
+              type: string
+        required: true
   "/sign_up":
     post:
       summary: Sign up
@@ -57,7 +50,7 @@ paths:
       - Auth
       parameters: []
       responses:
-        '200':
+        '201':
           description: User sign up
           content:
             application/json:
@@ -72,35 +65,389 @@ paths:
                 required:
                 - token
                 - expires_at
-        '401':
+        '422':
           description: User already register
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
+                  errors:
+                    type: object
                 required:
-                - error
+                - errors
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              type: object
-              properties:
-                first_name:
-                  type: string
-                last_name:
-                  type: string
-                handle:
-                  type: string
-                password:
-                  type: string
-              required:
-              - first_name
-              - handle
-              - password
+              type: string
+        required: true
+  "/photos":
+    post:
+      summary: Create photo
+      tags:
+      - Photos
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Photo created for place
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: object
+                required:
+                - body
+        '404':
+          description: Invalid imageable id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                required:
+                - errors
+        '422':
+          description: Invalid image extension
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                required:
+                - errors
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                required:
+                - errors
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: file
+        required: true
+        description: 'Valid image extension: jpg, jpeg, png, webp'
+  "/photos/{id}":
+    delete:
+      summary: Delete photo
+      tags:
+      - Photos
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the photo
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Photo deleted
+        '404':
+          description: Photo not found
+        '401':
+          description: Invalid token
+  "/places":
+    get:
+      summary: Collection places
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token.
+        schema:
+          type: string
+      - name: begin_date
+        in: query
+        description: Date should be in UNIX time format and must be in seconds. This
+          parameter specifies from what time period places should be shown.
+        example: 1720533451
+        schema:
+          type: integer
+      - name: end_date
+        in: query
+        description: Date should be in UNIX time format and must be in seconds. This
+          parameter specifies until what time period places should be shown.
+        example: 1720619851
+        schema:
+          type: integer
+      - name: sort
+        in: query
+        description: 'Sort have two type: desc or asc. Sorting occurs by the date
+          parameter. If the parameter is not specified, then sort by default by desc.'
+        example: asc
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Skips a number of search results. By default 0.
+        example: 0
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: Maximum search result, but not more than 50. By default 20
+        example: 30
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Should return collection until end date
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: array
+                required:
+                - body
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                required:
+                - errors
+    post:
+      summary: Create place
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Place created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: object
+                required:
+                - body
+        '422':
+          description: Enter invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                required:
+                - errors
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                required:
+                - errors
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: string
+        required: true
+  "/places/{id}":
+    delete:
+      summary: Delete place
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the place
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Place deleted
+        '404':
+          description: Place not found
+        '401':
+          description: Invalid token
+    put:
+      summary: Update place
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the place
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Place updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: object
+                required:
+                - body
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                required:
+                - errors
+        '404':
+          description: Place not found
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: string
+        required: true
+    get:
+      summary: Show place
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the place
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Show place
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: object
+                required:
+                - body
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                required:
+                - errors
+        '404':
+          description: Place not found
+  "/users/{id}":
+    get:
+      summary: Show user
+      tags:
+      - Users
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the user
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Show user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  body:
+                    type: object
+                required:
+                - body
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                required:
+                - errors
+        '404':
+          description: User not found
 servers:
 - url: http://localhost:3000
   description: Local server

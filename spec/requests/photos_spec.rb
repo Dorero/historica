@@ -1,7 +1,5 @@
 require 'rails_helper'
 require 'swagger_helper'
-require 'sidekiq/testing'
-Sidekiq::Testing.fake!
 
 RSpec.describe "Photos", type: :request do
   let!(:user) { create(:user) }
