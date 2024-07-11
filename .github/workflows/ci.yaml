@@ -62,6 +62,19 @@ jobs:
         with:
           ruby-version: 3.3.1
 
+      - name: Check RAILS_MASTER_KEY
+        run: |
+          if [ -z "$RAILS_MASTER_KEY" ]; then
+            echo "RAILS_MASTER_KEY is not set"
+            exit 1
+          else
+            echo "RAILS_MASTER_KEY is set"
+          fi
+
+      - name: Check credentials decryption
+        run: |
+          bin/rails runner "puts Rails.application.credentials.secret_key_base"
+
       - name: Install dependencies
         run: |
           gem install bundler
