@@ -1,13 +1,148 @@
 require 'rails_helper'
 require 'swagger_helper'
-require 'sidekiq/testing'
-Sidekiq::Testing.fake!
 
 RSpec.describe "Places", type: :request do
   let!(:user) { create(:user) }
   let!(:authorization) { "Bearer #{JwtService.encode(user_id: user.id)}" }
 
   path '/places' do
+    get 'Collection places' do
+      let!(:place) { create(:place, date: (Time.now - 10.days).to_i) }
+      let!(:first_place) { create(:place, date: (Time.now - 2.days).to_i) }
+      let!(:second_place) { create(:place, date: (Time.now - 1.days).to_i) }
+
+      tags 'Places'
+      produces 'application/json'
+      parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token.'
+      parameter name: :begin_date, in: :query, type: :integer, description: 'Date should be in UNIX time format and must be in seconds. This parameter specifies from what time period places should be shown.', example: 1720533451
+      parameter name: :end_date, in: :query, type: :integer, description: 'Date should be in UNIX time format and must be in seconds. This parameter specifies until what time period places should be shown.', example: 1720619851
+      parameter name: :sort, in: :query, type: :string, description: 'Sort have two type: desc or asc. Sorting occurs by the date parameter. If the parameter is not specified, then sort by default by desc.', example: 'asc'
+      parameter name: :offset, in: :query, type: :integer, description: 'Skips a number of search results. By default 0.', example: 0
+      parameter name: :limit, in: :query, type: :integer, description: 'Maximum search result, but not more than 50. By default 20', example: 30
+
+      response '200', "Should return collection between begin and end date" do
+        before do
+          expect(PlaceTriggerIndexJob.jobs.size).to eq(3)
+
+          Sidekiq::Worker.drain_all
+
+          # Need sleep for indexing.
+          # After place is created, job is added to the queue to index the object in meilisearch.
+          sleep(0.10)
+        end
+
+        after { Place.clear_index! }
+
+        schema type: :object,
+               properties: {
+                 body: { type: :array },
+               },
+               required: ['body']
+
+        let(:begin_date) { (Time.now - 8.days).to_i }
+        let(:end_date) { (Time.now).to_i }
+        let(:sort) { "asc" }
+        let(:offset) { 0 }
+        let(:limit) { 2 }
+
+        run_test! do |response|
+          data = JSON(response.body)["body"]
+          expect(data.size).to eq(2)
+          expect(data.first["id"]).to eq(first_place.id)
+          expect(data.last["id"]).to eq(second_place.id)
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      response '200', "Should return collection from begin date" do
+        before do
+          expect(PlaceTriggerIndexJob.jobs.size).to eq(3)
+
+          Sidekiq::Worker.drain_all
+
+          # Need sleep for indexing.
+          # After place is created, job is added to the queue to index the object in meilisearch.
+          sleep(0.10)
+        end
+
+        after { Place.clear_index! }
+
+        schema type: :object,
+               properties: {
+                 body: { type: :array },
+               },
+               required: ['body']
+
+        let(:begin_date) { (Time.now - 12.days).to_i }
+        let(:end_date) { "" }
+        let(:sort) { "" }
+        let(:offset) { 0 }
+        let(:limit) { 2 }
+
+        run_test! do |response|
+          data = JSON(response.body)["body"]
+          expect(data.size).to eq(2)
+          expect(data.first["id"]).to eq(second_place.id)
+          expect(data.last["id"]).to eq(first_place.id)
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      response '200', "Should return collection until end date" do
+        before do
+          expect(PlaceTriggerIndexJob.jobs.size).to eq(3)
+
+          Sidekiq::Worker.drain_all
+
+          # Need sleep for indexing.
+          # After place is created, job is added to the queue to index the object in meilisearch.
+          sleep(0.10)
+        end
+
+        after { Place.clear_index! }
+
+        schema type: :object,
+               properties: {
+                 body: { type: :array },
+               },
+               required: ['body']
+
+        let(:begin_date) { "" }
+        let(:end_date) { (Time.now - 3.days).to_i }
+        let(:sort) { "" }
+        let(:offset) { 0 }
+        let(:limit) { 2 }
+
+
+        run_test! do |response|
+          data = JSON(response.body)["body"]
+          expect(data.size).to eq(1)
+          expect(data.first["id"]).to eq(place.id)
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      response '401', "Invalid token" do
+        schema type: :object,
+               properties: {
+                 errors: { type: :string },
+               },
+               required: ['errors']
+
+        let(:authorization) { "Bearer invalid token" }
+        let(:begin_date) { Faker::Time.backward(days: 11).to_i }
+        let(:end_date) { Faker::Time.backward(days: 1).to_i }
+        let(:sort) { "asc" }
+        let(:offset) { 0 }
+        let(:limit) { 1 }
+        let!(:place) { create_list(:place, 2) }
+
+        run_test! do |response|
+          expect(response).to have_http_status(:unauthorized)
+        end
+      end
+    end
+
     post 'Create place' do
       tags 'Places'
       consumes 'multipart/form-data'
@@ -16,9 +151,9 @@ RSpec.describe "Places", type: :request do
       parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
       parameter name: :title, in: :formData, type: :string, required: true
       parameter name: :description, in: :formData, type: :string
-      parameter name: :date, in: :formData, type: :integer, required: true
-      parameter name: :latitude, in: :formData, type: :decimal, required: true
-      parameter name: :longitude, in: :formData, type: :decimal, required: true
+      parameter name: :date, in: :formData, type: :integer, required: true, description: 'Date should be in UNIX time format and must be in seconds', example: 1720619851
+      parameter name: :latitude, in: :formData, type: :decimal, required: true, example: -55.7875842956319
+      parameter name: :longitude, in: :formData, type: :decimal, required: true, example: 18.207674420842892
       parameter name: :photos, in: :formData, type: :array, items: { type: :file }
 
       response '201', "Place created" do
@@ -46,8 +181,8 @@ RSpec.describe "Places", type: :request do
           expect(data["title"]).to eq(title)
           expect(data["description"]).to eq(description)
           expect(data["date"]).to eq(date)
-          expect(data["latitude"]).to eq(latitude)
-          expect(data["longitude"]).to eq(longitude)
+          expect(data["_geo"]["lat"]).to eq(latitude)
+          expect(data["_geo"]["lng"]).to eq(longitude)
           expect(PromoteJob.jobs.size).to eq(1)
           expect(response).to have_http_status(:created)
         end
@@ -102,12 +237,12 @@ RSpec.describe "Places", type: :request do
         end
 
         run_test! do |response|
-          expect(PromoteJob.jobs.size).to eq(0)
           errors = JSON.parse(response.body)['errors']
           expect(errors['title']).to include("can't be blank")
-          expect(errors['latitude']).to include("can't be blank", "is not a number")
-          expect(errors['longitude']).to include("can't be blank", "is not a number")
+          expect(errors["_geo"].first).to include("latitude must be a number between -90 and 90")
+          expect(errors["_geo"].last).to include("longitude must be a number between -180 and 180")
           expect(errors['date']).to include("can't be blank")
+          expect(PromoteJob.jobs.size).to eq(0)
           expect(response).to have_http_status(:unprocessable_entity)
         end
       end
@@ -198,9 +333,9 @@ RSpec.describe "Places", type: :request do
       parameter name: :id, in: :path, type: :string, description: 'Id of the place'
       parameter name: :title, in: :formData, type: :string, required: true
       parameter name: :description, in: :formData, type: :string
-      parameter name: :date, in: :formData, type: :integer, required: true
-      parameter name: :latitude, in: :formData, type: :decimal, required: true
-      parameter name: :longitude, in: :formData, type: :decimal, required: true
+      parameter name: :date, in: :formData, type: :integer, required: true, description: 'Date should be in UNIX time format and must be in seconds', example: 1720619851
+      parameter name: :latitude, in: :formData, type: :decimal, required: true, example: -55.7875842956319
+      parameter name: :longitude, in: :formData, type: :decimal, required: true, example: 18.207674420842892
 
       response '200', "Place updated" do
         schema type: :object,
@@ -223,8 +358,8 @@ RSpec.describe "Places", type: :request do
           expect(data["title"]).to eq(title)
           expect(data["description"]).to eq(description)
           expect(data["date"]).to eq(date)
-          expect(data["latitude"]).to eq(latitude)
-          expect(data["longitude"]).to eq(longitude)
+          expect(data["_geo"]["lat"]).to eq(latitude)
+          expect(data["_geo"]["lng"]).to eq(longitude)
           expect(response).to have_http_status(:ok)
         end
       end
@@ -296,8 +431,8 @@ RSpec.describe "Places", type: :request do
           expect(data["title"]).to eq(place.title)
           expect(data["description"]).to eq(place.description)
           expect(data["date"]).to eq(place.date)
-          expect(data["latitude"]).to eq(place.latitude)
-          expect(data["longitude"]).to eq(place.longitude)
+          expect(data["_geo"]["lat"]).to eq(place._geo["lat"])
+          expect(data["_geo"]["lng"]).to eq(place._geo["lng"])
           expect(response).to have_http_status(:ok)
         end
       end

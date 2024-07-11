@@ -1,7 +1,6 @@
 require 'rails_helper'
 require 'swagger_helper'
-require 'sidekiq/testing'
-Sidekiq::Testing.fake!
+
 
 RSpec.describe 'Auth', type: :request do
   path '/sign_in' do

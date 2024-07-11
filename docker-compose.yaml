@@ -25,6 +25,15 @@ services:
     networks:
       - historica_network
 
+  meilisearch:
+    image: getmeili/meilisearch:v1.5
+    ports:
+      - "7700:7700"
+    networks:
+      - historica_network
+    environment:
+      MEILI_NO_ANALYTICS: "true"
+
 volumes:
   postgres_data:
   redis_data:
