@@ -53,6 +53,7 @@ jobs:
       DATABASE_URL: postgres://historica:historica@localhost:5432/historica_test
       REDIS_URL: redis://localhost:6379/0
       MEILISEARCH_URL: http://localhost:7700
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
 
     steps:
       - uses: actions/checkout@v2
