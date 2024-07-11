@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.0-alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: historica_test
+          POSTGRES_USER: historica
+          POSTGRES_PASSWORD: historica
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7.0-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      meilisearch:
+        image: getmeili/meilisearch:v1.5
+        ports:
+          - 7700:7700
+        options: >-
+          --health-cmd "curl -f http://localhost:7700/health || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/historica_test
+      REDIS_URL: redis://localhost:6379/0
+      MEILISEARCH_URL: http://localhost:7700
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.1
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install
+
+      - name: Set up database
+        run: |
+          cp config/database.yml.ci config/database.yml
+          bin/rails db:create
+          bin/rails db:schema:load
+
+      - name: Wait for services to be ready
+        run: |
+          until nc -z localhost 5432; do sleep 1; done
+          until nc -z localhost 6379; do sleep 1; done
+          until nc -z localhost 7700; do sleep 1; done
+
+      - name: Run tests
+        run: |
+          bundle exec rspec
