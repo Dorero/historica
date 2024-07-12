@@ -2,18 +2,18 @@
 
 class PlacesController < ApplicationController
   def index
-    render json: { body: Place.search('', {
-                                        sort: build_sort(params),
-                                        filter: build_filters(params),
-                                        limit: build_limit(params[:limit]),
-                                        offset: params[:offset].to_i || 0
-                                      }) }
+    render json: Place.search('', {
+                                sort: build_sort(params),
+                                filter: build_filters(params),
+                                limit: build_limit(params[:limit]),
+                                offset: params[:offset].to_i || 0
+                              })
   end
 
   def show
     return head :not_found unless Place.exists?(params[:id])
 
-    render json: { body: Place.find(params[:id]).as_json(include: { photos: { only: [:id], methods: :url } }) },
+    render json: Place.find(params[:id]).as_json(include: { photos: { only: [:id], methods: :url } }),
            status: :ok
   end
 
@@ -26,7 +26,7 @@ class PlacesController < ApplicationController
     )
 
     if place.save
-      render json: { body: place.as_json(include: { photos: { only: [:id], methods: :url } }) }, status: :created
+      render json: place.as_json(include: { photos: { only: [:id], methods: :url } }), status: :created
     else
       render json: { errors: place.errors.messages }, status: :unprocessable_entity
     end
@@ -38,7 +38,7 @@ class PlacesController < ApplicationController
     place = Place.update(params[:id], build_params(permit_params))
 
     if place.save
-      render json: { body: place.as_json(include: { photos: { only: [:id], methods: :url } }) }, status: :ok
+      render json: place.as_json(include: { photos: { only: [:id], methods: :url } }), status: :ok
     else
       render json: { errors: place.errors.messages }, status: :unprocessable_entity
     end
@@ -54,7 +54,7 @@ class PlacesController < ApplicationController
   private
 
   def permit_params
-    params.permit(:title, :description, :date, :longitude, :latitude, photos: [])
+    params.require(:place).permit(:title, :description, :date, :longitude, :latitude, photos: [])
   end
 
   def build_filters(params)

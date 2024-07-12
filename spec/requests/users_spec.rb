@@ -10,21 +10,46 @@ RSpec.describe "Users", type: :request do
       tags 'Users'
       produces 'application/json'
       parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
-      parameter name: :id, in: :path, type: :string, description: 'Id of the user'
+      parameter name: :id, in: :path, type: :integer, description: 'Id of the user'
 
       response '200', "Show user" do
         schema type: :object,
                properties: {
-                 body: { type: :object },
+                 id: { type: :integer },
+                 first_name: { type: :string },
+                 last_name: { type: :string },
+                 handle: { type: :string },
+                 password: { type: :string, nullable: true },
+                 password_digest: { type: :string },
+                 created_at: { type: :string, format: 'date-time' },
+                 updated_at: { type: :string, format: 'date-time' },
+                 photos: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :integer },
+                       url: { type: :string }
+                     }
+                   }
+                 }
                },
-               required: ['body']
+               example: {
+                 "id": 4059,
+                 "first_name": "Korey",
+                 "last_name": "Wunsch",
+                 "handle": "Paige",
+                 "created_at": "2024-07-12T17:49:53.375Z",
+                 "updated_at": "2024-07-12T17:49:53.375Z",
+                 "photos": [{ id: 332, "url": "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg" }]
+               }
 
         let!(:user) { create(:user) }
 
         let(:id) { user.id }
 
         run_test! do |response|
-          data = JSON(response.body)["body"]
+          data = JSON(response.body)
           expect(data["first_name"]).to eq(user.first_name)
           expect(data["last_name"]).to eq(user.last_name)
           expect(data["handle"]).to eq(user.handle)
@@ -37,8 +62,9 @@ RSpec.describe "Users", type: :request do
         schema type: :object,
                properties: {
                  errors: { type: :string },
-               },
-               required: ['errors']
+               }, example: {
+            errors: "decode error"
+          }
 
         let(:authorization) { "Bearer invalid token" }
         let(:id) { -1 }

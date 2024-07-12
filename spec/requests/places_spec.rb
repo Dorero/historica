@@ -35,11 +35,45 @@ RSpec.describe "Places", type: :request do
 
         after { Place.clear_index! }
 
-        schema type: :object,
-               properties: {
-                 body: { type: :array },
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :integer },
+                   title: { type: :string },
+                   description: { type: :string },
+                   date: { type: :integer },
+                   _geo: {
+                     type: :object,
+                     properties: {
+                       lat: { type: :number, format: :float },
+                       lng: { type: :number, format: :float }
+                     }
+                   },
+                   created_at: { type: :string, format: 'date-time' },
+                   updated_at: { type: :string, format: 'date-time' }
+                 }
                },
-               required: ['body']
+               example: [
+                 {
+                   id: 2402,
+                   title: "Shalonda Terry",
+                   description: "Geraldine Huels",
+                   date: 1720632325,
+                   _geo: { lat: -60.559753407124504, lng: 38.80482239138121 },
+                   created_at: "2024-07-12T17:25:25.573Z",
+                   updated_at: "2024-07-12T17:25:25.573Z"
+                 },
+                 {
+                   id: 2403,
+                   title: "Brenna Toy",
+                   description: "Samatha Weimann PhD",
+                   date: 1720718725,
+                   _geo: { lat: -18.228828903020116, lng: -116.22143055678555 },
+                   created_at: "2024-07-12T17:25:25.574Z",
+                   updated_at: "2024-07-12T17:25:25.574Z"
+                 }
+               ]
 
         let(:begin_date) { (Time.now - 8.days).to_i }
         let(:end_date) { (Time.now).to_i }
@@ -48,7 +82,7 @@ RSpec.describe "Places", type: :request do
         let(:limit) { 2 }
 
         run_test! do |response|
-          data = JSON(response.body)["body"]
+          data = JSON(response.body)
           expect(data.size).to eq(2)
           expect(data.first["id"]).to eq(first_place.id)
           expect(data.last["id"]).to eq(second_place.id)
@@ -69,11 +103,45 @@ RSpec.describe "Places", type: :request do
 
         after { Place.clear_index! }
 
-        schema type: :object,
-               properties: {
-                 body: { type: :array },
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :integer },
+                   title: { type: :string },
+                   description: { type: :string },
+                   date: { type: :integer },
+                   _geo: {
+                     type: :object,
+                     properties: {
+                       lat: { type: :number, format: :float },
+                       lng: { type: :number, format: :float }
+                     }
+                   },
+                   created_at: { type: :string, format: 'date-time' },
+                   updated_at: { type: :string, format: 'date-time' }
+                 }
                },
-               required: ['body']
+               example: [
+                 {
+                   id: 2402,
+                   title: "Shalonda Terry",
+                   description: "Geraldine Huels",
+                   date: 1720632325,
+                   _geo: { lat: -60.559753407124504, lng: 38.80482239138121 },
+                   created_at: "2024-07-12T17:25:25.573Z",
+                   updated_at: "2024-07-12T17:25:25.573Z"
+                 },
+                 {
+                   id: 2403,
+                   title: "Brenna Toy",
+                   description: "Samatha Weimann PhD",
+                   date: 1720718725,
+                   _geo: { lat: -18.228828903020116, lng: -116.22143055678555 },
+                   created_at: "2024-07-12T17:25:25.574Z",
+                   updated_at: "2024-07-12T17:25:25.574Z"
+                 }
+               ]
 
         let(:begin_date) { (Time.now - 12.days).to_i }
         let(:end_date) { "" }
@@ -82,7 +150,7 @@ RSpec.describe "Places", type: :request do
         let(:limit) { 2 }
 
         run_test! do |response|
-          data = JSON(response.body)["body"]
+          data = JSON(response.body)
           expect(data.size).to eq(2)
           expect(data.first["id"]).to eq(second_place.id)
           expect(data.last["id"]).to eq(first_place.id)
@@ -103,11 +171,45 @@ RSpec.describe "Places", type: :request do
 
         after { Place.clear_index! }
 
-        schema type: :object,
-               properties: {
-                 body: { type: :array },
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :integer },
+                   title: { type: :string },
+                   description: { type: :string },
+                   date: { type: :integer },
+                   _geo: {
+                     type: :object,
+                     properties: {
+                       lat: { type: :number, format: :float },
+                       lng: { type: :number, format: :float }
+                     }
+                   },
+                   created_at: { type: :string, format: 'date-time' },
+                   updated_at: { type: :string, format: 'date-time' }
+                 }
                },
-               required: ['body']
+               example: [
+                 {
+                   id: 2402,
+                   title: "Shalonda Terry",
+                   description: "Geraldine Huels",
+                   date: 1720632325,
+                   _geo: { lat: -60.559753407124504, lng: 38.80482239138121 },
+                   created_at: "2024-07-12T17:25:25.573Z",
+                   updated_at: "2024-07-12T17:25:25.573Z"
+                 },
+                 {
+                   id: 2403,
+                   title: "Brenna Toy",
+                   description: "Samatha Weimann PhD",
+                   date: 1720718725,
+                   _geo: { lat: -18.228828903020116, lng: -116.22143055678555 },
+                   created_at: "2024-07-12T17:25:25.574Z",
+                   updated_at: "2024-07-12T17:25:25.574Z"
+                 }
+               ]
 
         let(:begin_date) { "" }
         let(:end_date) { (Time.now - 3.days).to_i }
@@ -115,9 +217,8 @@ RSpec.describe "Places", type: :request do
         let(:offset) { 0 }
         let(:limit) { 2 }
 
-
         run_test! do |response|
-          data = JSON(response.body)["body"]
+          data = JSON(response.body)
           expect(data.size).to eq(1)
           expect(data.first["id"]).to eq(place.id)
           expect(response).to have_http_status(:ok)
@@ -128,8 +229,9 @@ RSpec.describe "Places", type: :request do
         schema type: :object,
                properties: {
                  errors: { type: :string },
-               },
-               required: ['errors']
+               }, example: {
+            errors: "decode error"
+          }
 
         let(:authorization) { "Bearer invalid token" }
         let(:begin_date) { Faker::Time.backward(days: 11).to_i }
@@ -137,7 +239,6 @@ RSpec.describe "Places", type: :request do
         let(:sort) { "asc" }
         let(:offset) { 0 }
         let(:limit) { 1 }
-        let!(:place) { create_list(:place, 2) }
 
         run_test! do |response|
           expect(response).to have_http_status(:unauthorized)
@@ -151,40 +252,79 @@ RSpec.describe "Places", type: :request do
       produces 'application/json'
 
       parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
-      parameter name: :title, in: :formData, type: :string, required: true
-      parameter name: :description, in: :formData, type: :string
-      parameter name: :date, in: :formData, type: :integer, required: true, description: 'Date should be in UNIX time format and must be in seconds', example: 1720619851
-      parameter name: :latitude, in: :formData, type: :decimal, required: true, example: -55.7875842956319
-      parameter name: :longitude, in: :formData, type: :decimal, required: true, example: 18.207674420842892
-      parameter name: :photos, in: :formData, type: :array, items: { type: :file }
+      parameter name: :place, in: :formData, schema: {
+        type: :object,
+        properties: {
+          title: { type: :string },
+          description: { type: :string },
+          date: { type: :integer, description: 'Date should be in UNIX time format and must be in seconds', example: 1720619851 },
+          latitude: { type: :number, format: :float, example: -55.7875842956319 },
+          longitude: { type: :number, format: :float, example: 18.207674420842892 },
+          photos: { type: :array, items: { type: :string, format: :binary } }
+        },
+        required: ['title', 'date', 'latitude', 'longitude']
+      }
 
       response '201', "Place created" do
         schema type: :object,
                properties: {
-                 body: { type: :object },
+                 id: { type: :integer },
+                 title: { type: :string },
+                 description: { type: :string },
+                 date: { type: :integer },
+                 _geo: {
+                   type: :object,
+                   properties: {
+                     lat: { type: :number, format: :float },
+                     lng: { type: :number, format: :float }
+                   }
+                 },
+                 created_at: { type: :string, format: 'date-time' },
+                 updated_at: { type: :string, format: 'date-time' },
+                 photos: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :integer },
+                       url: { type: :string }
+                     }
+                   }
+                 }
                },
-               required: ['body']
+               example: {
+                 id: 2285,
+                 title: "Kendrick Upton DDS",
+                 description: "Rep. Telma Kohler",
+                 date: 1719883892,
+                 _geo: { lat: 6.878716694431873, lng: 122.72957393381876 },
+                 created_at: "2024-07-12T14:31:49.535Z",
+                 updated_at: "2024-07-12T14:31:49.535Z",
+                 photos: [{ id: 332, "url": "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg" }]
+               }
 
-        let(:title) { Faker::Name.name }
-        let(:description) { Faker::Name.name }
-        let(:date) { Faker::Time.backward(days: 10).to_i }
-        let(:latitude) { Faker::Address.latitude }
-        let(:longitude) { Faker::Address.longitude }
-        let(:photos) do
-          [
-            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
-          ]
+        let(:place) do
+          {
+            title: Faker::Name.name,
+            description: Faker::Name.name,
+            date: Faker::Time.backward(days: 10).to_i,
+            latitude: Faker::Address.latitude,
+            longitude: Faker::Address.longitude,
+            photos: [
+              fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
+            ]
+          }
         end
 
         run_test! do |response|
-          data = JSON(response.body)["body"]
+          data = JSON(response.body)
           expect(data["photos"].first["id"]).not_to eq(nil)
           expect(data["photos"].first["url"]).not_to eq(nil)
-          expect(data["title"]).to eq(title)
-          expect(data["description"]).to eq(description)
-          expect(data["date"]).to eq(date)
-          expect(data["_geo"]["lat"]).to eq(latitude)
-          expect(data["_geo"]["lng"]).to eq(longitude)
+          expect(data["title"]).to eq(place[:title])
+          expect(data["description"]).to eq(place[:description])
+          expect(data["date"]).to eq(place[:date])
+          expect(data["_geo"]["lat"]).to eq(place[:latitude])
+          expect(data["_geo"]["lng"]).to eq(place[:longitude])
           expect(PromoteJob.jobs.size).to eq(1)
           expect(response).to have_http_status(:created)
         end
@@ -193,27 +333,25 @@ RSpec.describe "Places", type: :request do
       response '422', "Invalid image extension" do
         before { PromoteJob.clear }
 
-        schema type: :object,
-               properties: {
-                 errors: { type: :object },
-               },
-               required: ['errors']
+        schema type: :object, example: { "photos.image" => ["extension must be one of: jpg, jpeg, png, webp"] }
 
-        let(:title) { Faker::Name.name }
-        let(:description) { Faker::Name.name }
-        let(:date) { Faker::Time.backward(days: 10).to_i }
-        let(:latitude) { Faker::Address.latitude }
-        let(:longitude) { Faker::Address.longitude }
-        let(:photos) do
-          [
-            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.pdf'), 'image/jpeg')
-          ]
+        let(:place) do
+          {
+            title: Faker::Name.name,
+            description: Faker::Name.name,
+            date: Faker::Time.backward(days: 10).to_i,
+            latitude: Faker::Address.latitude,
+            longitude: Faker::Address.longitude,
+            photos: [
+              fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.pdf'), 'image/jpeg')
+            ]
+          }
         end
 
         run_test! do |response|
-          expect(PromoteJob.jobs.size).to eq(0)
           errors = JSON.parse(response.body)['errors']
           expect(errors["photos.image"].first).to eq("extension must be one of: jpg, jpeg, png, webp")
+          expect(PromoteJob.jobs.size).to eq(0)
           expect(response).to have_http_status(:unprocessable_entity)
         end
       end
@@ -222,20 +360,25 @@ RSpec.describe "Places", type: :request do
         before { PromoteJob.clear }
 
         schema type: :object,
-               properties: {
-                 errors: { type: :object },
-               },
-               required: ['errors']
+               example: {
+                 "title" => ["can't be blank"],
+                 "date" => ["can't be blank"],
+                 "_geo" => ["latitude must be a number between -90 and 90",
+                            "longitude must be a number between -180 and 180"
+                 ]
+               }
 
-        let(:title) { "" }
-        let(:description) { Faker::Name.name }
-        let(:date) { "" }
-        let(:latitude) { "" }
-        let(:longitude) { "" }
-        let(:photos) do
-          [
-            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
-          ]
+        let(:place) do
+          {
+            title: "",
+            description: Faker::Name.name,
+            date: "",
+            latitude: "",
+            longitude: "",
+            photos: [
+              fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
+            ]
+          }
         end
 
         run_test! do |response|
@@ -253,19 +396,22 @@ RSpec.describe "Places", type: :request do
         schema type: :object,
                properties: {
                  errors: { type: :string },
-               },
-               required: ['errors']
+               }, example: {
+            errors: "decode error"
+          }
 
         let(:authorization) { "Bearer invalid token" }
-        let(:title) { "" }
-        let(:description) { Faker::Name.name }
-        let(:date) { "" }
-        let(:latitude) { "" }
-        let(:longitude) { "" }
-        let(:photos) do
-          [
-            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
-          ]
+        let(:place) do
+          {
+            title: Faker::Name.name,
+            description: Faker::Name.name,
+            date: Faker::Time.backward(days: 10).to_i,
+            latitude: Faker::Address.latitude,
+            longitude: Faker::Address.longitude,
+            photos: [
+              fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
+            ]
+          }
         end
 
         run_test! do |response|
@@ -279,7 +425,7 @@ RSpec.describe "Places", type: :request do
     delete 'Delete place' do
       tags 'Places'
       parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
-      parameter name: :id, in: :path, type: :string, description: 'Id of the place'
+      parameter name: :id, in: :path, type: :integer, description: 'Id of the place'
 
       response '200', "Place deleted" do
         let!(:place) { create(:place) }
@@ -304,21 +450,12 @@ RSpec.describe "Places", type: :request do
         schema type: :object,
                properties: {
                  errors: { type: :string },
-               },
-               required: ['errors']
+               }, example: {
+            errors: "decode error"
+          }
 
         let(:authorization) { "Bearer invalid token" }
         let(:id) { -1 }
-        let(:title) { "" }
-        let(:description) { Faker::Name.name }
-        let(:date) { "" }
-        let(:latitude) { "" }
-        let(:longitude) { "" }
-        let(:photos) do
-          [
-            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
-          ]
-        end
 
         run_test! do |response|
           expect(response).to have_http_status(:unauthorized)
@@ -332,36 +469,77 @@ RSpec.describe "Places", type: :request do
       produces 'application/json'
 
       parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
-      parameter name: :id, in: :path, type: :string, description: 'Id of the place'
-      parameter name: :title, in: :formData, type: :string, required: true
-      parameter name: :description, in: :formData, type: :string
-      parameter name: :date, in: :formData, type: :integer, required: true, description: 'Date should be in UNIX time format and must be in seconds', example: 1720619851
-      parameter name: :latitude, in: :formData, type: :decimal, required: true, example: -55.7875842956319
-      parameter name: :longitude, in: :formData, type: :decimal, required: true, example: 18.207674420842892
+      parameter name: :id, in: :path, type: :integer, description: 'Id of the place'
+      parameter name: :place, in: :formData, schema: {
+        type: :object,
+        properties: {
+          title: { type: :string, example: 'My Place' },
+          description: { type: :string, example: 'A description of my place' },
+          date: { type: :integer, description: 'Date should be in UNIX time format and must be in seconds', example: 1720619851 },
+          latitude: { type: :number, format: :float, example: -55.7875842956319 },
+          longitude: { type: :number, format: :float, example: 18.207674420842892 },
+        },
+        required: ['title', 'date', 'latitude', 'longitude']
+      }
 
       response '200', "Place updated" do
         schema type: :object,
                properties: {
-                 body: { type: :object },
+                 id: { type: :integer },
+                 title: { type: :string },
+                 description: { type: :string },
+                 date: { type: :integer },
+                 _geo: {
+                   type: :object,
+                   properties: {
+                     lat: { type: :number, format: :float },
+                     lng: { type: :number, format: :float }
+                   }
+                 },
+                 created_at: { type: :string, format: 'date-time' },
+                 updated_at: { type: :string, format: 'date-time' },
+                 photos: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :integer },
+                       url: { type: :string }
+                     }
+                   }
+                 }
                },
-               required: ['body']
+               example: {
+                 id: 2285,
+                 title: "Kendrick Upton DDS",
+                 description: "Rep. Telma Kohler",
+                 date: 1719883892,
+                 _geo: { lat: 6.878716694431873, lng: 122.72957393381876 },
+                 created_at: "2024-07-12T14:31:49.535Z",
+                 updated_at: "2024-07-12T14:31:49.535Z",
+                 photos: [{ id: 332, "url": "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg" }]
+               }
 
-        let!(:place) { create(:place) }
+        let!(:created_place) { create(:place) }
 
-        let(:id) { place.id }
-        let(:title) { Faker::Name.name }
-        let(:description) { Faker::Name.name }
-        let(:date) { Faker::Time.backward(days: 10).to_i }
-        let(:latitude) { Faker::Address.latitude }
-        let(:longitude) { Faker::Address.longitude }
+        let(:id) { created_place.id }
+        let(:place) do
+          {
+            title: Faker::Name.name,
+            description: Faker::Name.name,
+            date: Faker::Time.backward(days: 10).to_i,
+            latitude: Faker::Address.latitude,
+            longitude: Faker::Address.longitude,
+          }
+        end
 
         run_test! do |response|
-          data = JSON(response.body)["body"]
-          expect(data["title"]).to eq(title)
-          expect(data["description"]).to eq(description)
-          expect(data["date"]).to eq(date)
-          expect(data["_geo"]["lat"]).to eq(latitude)
-          expect(data["_geo"]["lng"]).to eq(longitude)
+          data = JSON(response.body)
+          expect(data["title"]).to eq(place[:title])
+          expect(data["description"]).to eq(place[:description])
+          expect(data["date"]).to eq(place[:date])
+          expect(data["_geo"]["lat"]).to eq(place[:latitude])
+          expect(data["_geo"]["lng"]).to eq(place[:longitude])
           expect(response).to have_http_status(:ok)
         end
       end
@@ -370,20 +548,20 @@ RSpec.describe "Places", type: :request do
         schema type: :object,
                properties: {
                  errors: { type: :string },
-               },
-               required: ['errors']
+               }, example: {
+            errors: "decode error"
+          }
 
         let(:authorization) { "Bearer invalid token" }
         let(:id) { -1 }
-        let(:title) { "" }
-        let(:description) { Faker::Name.name }
-        let(:date) { "" }
-        let(:latitude) { "" }
-        let(:longitude) { "" }
-        let(:photos) do
-          [
-            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
-          ]
+        let(:place) do
+          {
+            title: "",
+            description: Faker::Name.name,
+            date: "",
+            latitude: "",
+            longitude: "",
+          }
         end
 
         run_test! do |response|
@@ -393,15 +571,14 @@ RSpec.describe "Places", type: :request do
 
       response '404', "Place not found" do
         let(:id) { -1 }
-        let(:title) { "" }
-        let(:description) { Faker::Name.name }
-        let(:date) { "" }
-        let(:latitude) { "" }
-        let(:longitude) { "" }
-        let(:photos) do
-          [
-            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
-          ]
+        let(:place) do
+          {
+            title: "",
+            description: Faker::Name.name,
+            date: "",
+            latitude: "",
+            longitude: "",
+          }
         end
 
         run_test! do |response|
@@ -415,26 +592,57 @@ RSpec.describe "Places", type: :request do
       produces 'application/json'
 
       parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
-      parameter name: :id, in: :path, type: :string, description: 'Id of the place'
+      parameter name: :id, in: :path, type: :integer, description: 'Id of the place'
 
       response '200', "Show place" do
         schema type: :object,
                properties: {
-                 body: { type: :object },
+                 id: { type: :integer },
+                 title: { type: :string },
+                 description: { type: :string },
+                 date: { type: :integer },
+                 _geo: {
+                   type: :object,
+                   properties: {
+                     lat: { type: :number, format: :float },
+                     lng: { type: :number, format: :float }
+                   }
+                 },
+                 created_at: { type: :string, format: 'date-time' },
+                 updated_at: { type: :string, format: 'date-time' },
+                 photos: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :integer },
+                       url: { type: :string }
+                     }
+                   }
+                 }
                },
-               required: ['body']
+               example: {
+                 id: 2285,
+                 title: "Kendrick Upton DDS",
+                 description: "Rep. Telma Kohler",
+                 date: 1719883892,
+                 _geo: { lat: 6.878716694431873, lng: 122.72957393381876 },
+                 created_at: "2024-07-12T14:31:49.535Z",
+                 updated_at: "2024-07-12T14:31:49.535Z",
+                 photos: [{ id: 332, "url": "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg" }]
+               }
 
-        let!(:place) { create(:place) }
+        let!(:created_place) { create(:place) }
 
-        let(:id) { place.id }
+        let(:id) { created_place.id }
 
         run_test! do |response|
-          data = JSON(response.body)["body"]
-          expect(data["title"]).to eq(place.title)
-          expect(data["description"]).to eq(place.description)
-          expect(data["date"]).to eq(place.date)
-          expect(data["_geo"]["lat"]).to eq(place._geo["lat"])
-          expect(data["_geo"]["lng"]).to eq(place._geo["lng"])
+          data = JSON(response.body)
+          expect(data["title"]).to eq(created_place.title)
+          expect(data["description"]).to eq(created_place.description)
+          expect(data["date"]).to eq(created_place.date)
+          expect(data["_geo"]["lat"]).to eq(created_place._geo["lat"])
+          expect(data["_geo"]["lng"]).to eq(created_place._geo["lng"])
           expect(response).to have_http_status(:ok)
         end
       end
@@ -443,8 +651,9 @@ RSpec.describe "Places", type: :request do
         schema type: :object,
                properties: {
                  errors: { type: :string },
-               },
-               required: ['errors']
+               }, example: {
+            errors: "decode error"
+          }
 
         let(:authorization) { "Bearer invalid token" }
         let(:id) { -1 }

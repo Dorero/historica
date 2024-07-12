@@ -1,5 +1,6 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'simplecov'
+SimpleCov.minimum_coverage 90
 SimpleCov.start 'rails' do
   add_filter '/bin/'
   add_filter '/db/'

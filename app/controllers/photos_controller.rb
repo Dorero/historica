@@ -8,7 +8,7 @@ class PhotosController < ApplicationController
     photo = Photo.create(permit_params.except(:image_for_id).merge(imageable:))
 
     if photo.save
-      render json: { body: photo.as_json(methods: :url) }, status: :created
+      render json: photo.as_json(methods: :url), status: :created
     else
       render json: { errors: photo.errors.messages }, status: :unprocessable_entity
     end
