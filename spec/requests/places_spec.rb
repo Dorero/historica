@@ -5,6 +5,8 @@ RSpec.describe "Places", type: :request do
   let!(:user) { create(:user) }
   let!(:authorization) { "Bearer #{JwtService.encode(user_id: user.id)}" }
 
+  before { Sidekiq::Worker.clear_all }
+
   path '/places' do
     get 'Collection places' do
       let!(:place) { create(:place, date: (Time.now - 10.days).to_i) }

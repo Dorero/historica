@@ -29,12 +29,11 @@ class Place < ApplicationRecord
       return
     end
 
-    unless _geo['lat'].is_a?(Numeric) && _geo['lat'].between?(-90, 90) && _geo['lat'] != 0.0
-      errors.add(:_geo, 'latitude must be a number between -90 and 90')
-    end
+    errors.add(:_geo, 'latitude must be a number between -90 and 90') unless check_geo_param(_geo['lat'], -90, 90)
+    errors.add(:_geo, 'longitude must be a number between -180 and 180') unless check_geo_param(_geo['lng'], -180, 180)
+  end
 
-    return if _geo['lng'].is_a?(Numeric) && _geo['lng'].between?(-180, 180) && _geo['lng'] != 0.0
-
-    errors.add(:_geo, 'longitude must be a number between -180 and 180')
+  def check_geo_param(param, from, to)
+    param.is_a?(Numeric) && param.between?(from, to) && param != 0.0
   end
 end

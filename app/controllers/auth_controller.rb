@@ -15,11 +15,7 @@ class AuthController < ApplicationController
 
   def sign_up
     # Images are loading in the background
-    user = User.new(
-      permit_params.except(:photos).merge(
-        photos_attributes: permit_params[:photos].map { |file| { image: file } }
-      )
-    )
+    user = User.new(build_params(permit_params))
 
     if user.save
       render json: {
@@ -36,5 +32,11 @@ class AuthController < ApplicationController
 
   def permit_params
     params.permit(:first_name, :last_name, :handle, :password, photos: [])
+  end
+
+  def build_params(permit_params)
+    permit_params.except(:photos).merge(
+      photos_attributes: permit_params[:photos].map { |file| { image: file } }
+    )
   end
 end

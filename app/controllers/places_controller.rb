@@ -6,7 +6,7 @@ class PlacesController < ApplicationController
     limit = [params[:limit].to_i, 50].min if params[:limit].present?
 
     render json: { body: Place.search('', {
-                                        sort: ["date:#{params[:sort].present? ? params[:sort] : 'desc'}"],
+                                        sort: build_sort(params),
                                         filter: build_filters(params),
                                         limit:,
                                         offset: params[:offset].to_i || 0
@@ -24,11 +24,7 @@ class PlacesController < ApplicationController
     # Images are loading in the background
     place = Place.create(
       permit_params.except(:photos, :latitude, :longitude).merge(
-        photos_attributes: permit_params[:photos].map { |file| { image: file } },
-        _geo: {
-          lat: permit_params[:latitude].to_f,
-          lng: permit_params[:longitude].to_f
-        }
+        photos_attributes: permit_params[:photos].map { |file| { image: file } }, _geo: build_geo(permit_params)
       )
     )
 
@@ -42,12 +38,7 @@ class PlacesController < ApplicationController
   def update
     return head :not_found unless Place.exists?(params[:id])
 
-    place = Place.update(params[:id], permit_params.except(:photos, :latitude, :longitude).merge(
-                                        _geo: {
-                                          lat: permit_params[:latitude].to_f,
-                                          lng: permit_params[:longitude].to_f
-                                        }
-                                      ))
+    place = Place.update(params[:id], build_params(permit_params))
 
     if place.save
       render json: { body: place.as_json(include: { photos: { only: [:id], methods: :url } }) }, status: :ok
@@ -70,18 +61,32 @@ class PlacesController < ApplicationController
   end
 
   def build_filters(params)
-    begin_date = params[:begin_date]
-    end_date = params[:end_date]
-    filters = []
+    is_begin_date_present = params[:begin_date].present?
+    is_end_date_present = params[:end_date].present?
 
-    if begin_date.present? && end_date.blank?
-      filters << "date >= #{begin_date}"
-    elsif begin_date.blank? && end_date.present?
-      filters << "date < #{end_date}"
-    elsif begin_date.present? && end_date.present?
-      filters << "date >= #{begin_date} AND date <= #{end_date}"
+    if is_begin_date_present && params[:end_date].blank?
+      return "date >= #{params[:begin_date]}"
+    elsif params[:begin_date].blank? && is_end_date_present
+      return "date < #{params[:end_date]}"
+    elsif is_begin_date_present && is_end_date_present
+      return "date >= #{params[:begin_date]} AND date <= #{params[:end_date]}"
     end
 
-    filters.join(' AND ')
+    ''
+  end
+
+  def build_params(permit_params)
+    permit_params.except(:photos, :latitude, :longitude).merge(_geo: build_geo(permit_params))
+  end
+
+  def build_geo(params)
+    {
+      lat: params[:latitude].to_f,
+      lng: params[:longitude].to_f
+    }
+  end
+
+  def build_sort(params)
+    ["date:#{params[:sort].present? ? params[:sort] : 'desc'}"]
   end
 end

@@ -34,3 +34,7 @@ public/uploads
 /config/master.key
 .idea
 redis_data/
+
+/config/credentials/test.key
+
+/config/credentials/development.key
