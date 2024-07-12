@@ -2,13 +2,10 @@
 
 class PlacesController < ApplicationController
   def index
-    limit = 20
-    limit = [params[:limit].to_i, 50].min if params[:limit].present?
-
     render json: { body: Place.search('', {
                                         sort: build_sort(params),
                                         filter: build_filters(params),
-                                        limit:,
+                                        limit: build_limit(params[:limit]),
                                         offset: params[:offset].to_i || 0
                                       }) }
   end
@@ -88,5 +85,11 @@ class PlacesController < ApplicationController
 
   def build_sort(params)
     ["date:#{params[:sort].present? ? params[:sort] : 'desc'}"]
+  end
+
+  def build_limit(params_limit)
+    limit = 20
+    limit = [params_limit.to_i, 50].min if params_limit.present?
+    limit
   end
 end
