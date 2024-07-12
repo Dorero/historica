@@ -62,6 +62,7 @@ jobs:
         with:
           ruby-version: 3.3.1
 
+
       - name: Install dependencies
         run: |
           gem install bundler
