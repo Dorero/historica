@@ -2,7 +2,8 @@
 
 class PhotosController < ApplicationController
   def create
-    return render json: { errors: 'No such user or place found' }, status: :not_found if imageable?(params)
+    imageable = build_imageable(params)
+    return render json: { errors: 'No such user or place found' }, status: :not_found if imageable.nil?
 
     photo = Photo.create(permit_params.except(:image_for_id).merge(imageable:))
 
@@ -26,10 +27,10 @@ class PhotosController < ApplicationController
     params.permit(:image, :image_for_id)
   end
 
-  def imageable?(params)
+  def build_imageable(params)
     imageable = nil
     imageable = User.find(params[:image_for_id]) if User.exists?(params[:image_for_id])
     imageable = Place.find(params[:image_for_id]) if Place.exists?(params[:image_for_id])
-    imageable.nil?
+    imageable
   end
 end
