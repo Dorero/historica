@@ -226,12 +226,7 @@ RSpec.describe "Places", type: :request do
       end
 
       response '401', "Invalid token" do
-        schema type: :object,
-               properties: {
-                 errors: { type: :string },
-               }, example: {
-            errors: "decode error"
-          }
+        schema type: :string, example: "Decode error"
 
         let(:authorization) { "Bearer invalid token" }
         let(:begin_date) { Faker::Time.backward(days: 11).to_i }
@@ -241,6 +236,7 @@ RSpec.describe "Places", type: :request do
         let(:limit) { 1 }
 
         run_test! do |response|
+          expect(response.body).to eq("Decode error")
           expect(response).to have_http_status(:unauthorized)
         end
       end
@@ -393,12 +389,7 @@ RSpec.describe "Places", type: :request do
       end
 
       response '401', "Invalid token" do
-        schema type: :object,
-               properties: {
-                 errors: { type: :string },
-               }, example: {
-            errors: "decode error"
-          }
+        schema type: :string, example: "Decode error"
 
         let(:authorization) { "Bearer invalid token" }
         let(:place) do
@@ -415,6 +406,7 @@ RSpec.describe "Places", type: :request do
         end
 
         run_test! do |response|
+          expect(response.body).to eq("Decode error")
           expect(response).to have_http_status(:unauthorized)
         end
       end
@@ -428,36 +420,37 @@ RSpec.describe "Places", type: :request do
       parameter name: :id, in: :path, type: :integer, description: 'Id of the place'
 
       response '200', "Place deleted" do
+        schema type: :string, example: "Place successfully deleted"
+
         let!(:place) { create(:place) }
 
         let(:id) { place.id }
 
         run_test! do |response|
+          expect(response.body).to eq("Place successfully deleted")
           expect(Place.count).to eq(0)
           expect(response).to have_http_status(:ok)
         end
       end
 
       response '404', "Place not found" do
+        schema type: :string, example: "Place doesn't exist"
         let(:id) { -1 }
 
         run_test! do |response|
+          expect(response.body).to eq("Place doesn't exist")
           expect(response).to have_http_status(:not_found)
         end
       end
 
       response '401', "Invalid token" do
-        schema type: :object,
-               properties: {
-                 errors: { type: :string },
-               }, example: {
-            errors: "decode error"
-          }
+        schema type: :string, example: "Decode error"
 
         let(:authorization) { "Bearer invalid token" }
         let(:id) { -1 }
 
         run_test! do |response|
+          expect(response.body).to eq("Decode error")
           expect(response).to have_http_status(:unauthorized)
         end
       end
@@ -545,12 +538,7 @@ RSpec.describe "Places", type: :request do
       end
 
       response '401', "Invalid token" do
-        schema type: :object,
-               properties: {
-                 errors: { type: :string },
-               }, example: {
-            errors: "decode error"
-          }
+        schema type: :string, example: "Decode error"
 
         let(:authorization) { "Bearer invalid token" }
         let(:id) { -1 }
@@ -565,11 +553,14 @@ RSpec.describe "Places", type: :request do
         end
 
         run_test! do |response|
+          expect(response.body).to eq("Decode error")
           expect(response).to have_http_status(:unauthorized)
         end
       end
 
       response '404', "Place not found" do
+        schema type: :string, example: "Place doesn't exist"
+
         let(:id) { -1 }
         let(:place) do
           {
@@ -582,6 +573,7 @@ RSpec.describe "Places", type: :request do
         end
 
         run_test! do |response|
+          expect(response.body).to eq("Place doesn't exist")
           expect(response).to have_http_status(:not_found)
         end
       end
@@ -648,25 +640,24 @@ RSpec.describe "Places", type: :request do
       end
 
       response '401', "Invalid token" do
-        schema type: :object,
-               properties: {
-                 errors: { type: :string },
-               }, example: {
-            errors: "decode error"
-          }
+        schema type: :string, example: "Decode error"
 
         let(:authorization) { "Bearer invalid token" }
         let(:id) { -1 }
 
         run_test! do |response|
+          expect(response.body).to eq("Decode error")
           expect(response).to have_http_status(:unauthorized)
         end
       end
 
       response '404', "Place not found" do
+        schema type: :string, example: "Place doesn't exist"
+
         let(:id) { -1 }
 
         run_test! do |response|
+          expect(response.body).to eq("Place doesn't exist")
           expect(response).to have_http_status(:not_found)
         end
       end
@@ -713,6 +704,7 @@ RSpec.describe "Places", type: :request do
         let(:id) { -1 }
 
         run_test! do |response|
+          expect(response.body).to eq("Place doesn't exist")
           expect(response).to have_http_status(:not_found)
         end
       end

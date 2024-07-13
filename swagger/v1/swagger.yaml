@@ -31,12 +31,8 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                example:
-                  errors: Unauthorized
+                type: string
+                example: Unauthorized
       requestBody:
         content:
           multipart/form-data:
@@ -247,12 +243,8 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                example:
-                  errors: decode error
+                type: string
+                example: Decode error
       requestBody:
         content:
           multipart/form-data:
@@ -386,12 +378,8 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                example:
-                  errors: decode error
+                type: string
+                example: Decode error
     post:
       summary: Create place
       tags:
@@ -477,12 +465,8 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                example:
-                  errors: decode error
+                type: string
+                example: Decode error
       requestBody:
         content:
           multipart/form-data:
@@ -615,14 +599,15 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                example:
-                  errors: decode error
+                type: string
+                example: Decode error
         '404':
           description: Place not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Place doesn't exist
       requestBody:
         content:
           multipart/form-data:
@@ -727,14 +712,15 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                example:
-                  errors: decode error
+                type: string
+                example: Decode error
         '404':
           description: Place not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Place doesn't exist
   "/places/{id}/reviews":
     get:
       summary: Collection of place reviews
@@ -857,12 +843,8 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                example:
-                  errors: decode error
+                type: string
+                example: Decode error
         '404':
           description: Place not found
           content:
@@ -1072,14 +1054,15 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                example:
-                  errors: decode error
+                type: string
+                example: Decode error
         '404':
           description: User not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: User doesn't exist
   "/users/{id}/reviews":
     get:
       summary: Collection of user reviews

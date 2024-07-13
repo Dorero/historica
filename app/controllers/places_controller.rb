@@ -11,7 +11,7 @@ class PlacesController < ApplicationController
   end
 
   def show
-    return head :not_found unless Place.exists?(params[:id])
+    return render plain: "Place doesn't exist", status: :not_found unless Place.exists?(params[:id])
 
     render json: Place.find(params[:id]).as_json(include: { photos: { only: [:id], methods: :url } }),
            status: :ok
@@ -33,7 +33,7 @@ class PlacesController < ApplicationController
   end
 
   def update
-    return head :not_found unless Place.exists?(params[:id])
+    return render plain: "Place doesn't exist", status: :not_found unless Place.exists?(params[:id])
 
     place = Place.update(params[:id], build_params(permit_params))
 
@@ -45,10 +45,10 @@ class PlacesController < ApplicationController
   end
 
   def destroy
-    return head :not_found unless Place.exists?(params[:id])
+    return render plain: "Place doesn't exist", status: :not_found unless Place.exists?(params[:id])
 
     Place.destroy(params[:id])
-    head :ok
+    render plain: 'Place successfully deleted', status: :ok
   end
 
   def reviews

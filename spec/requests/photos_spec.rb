@@ -178,16 +178,11 @@ RSpec.describe "Photos", type: :request do
       end
 
       response '401', "Invalid token" do
-        schema type: :object,
-               properties: {
-                 errors: { type: :string },
-               }, example: {
-            errors: "decode error"
-          }
-
+        schema type: :string, example: "Decode error"
         let(:authorization) { "Bearer invalid token" }
 
         run_test! do |response|
+          expect(response.body).to eq("Decode error")
           expect(response).to have_http_status(:unauthorized)
         end
       end
@@ -201,36 +196,38 @@ RSpec.describe "Photos", type: :request do
       parameter name: :id, in: :path, type: :string, required: true
 
       response '200', "Photo deleted" do
+        schema type: :string, example: "Photo successfully deleted"
+
         let!(:photo) { create(:photo) }
 
         let(:id) { photo.id }
 
         run_test! do |response|
+          expect(response.body).to eq("Photo successfully deleted")
           expect(Photo.count).to eq(0)
           expect(response).to have_http_status(:ok)
         end
       end
 
       response '404', "Photo not found" do
+        schema type: :string, example: "Photo doesn't exist"
+
         let(:id) { -1 }
 
         run_test! do |response|
+          expect(response.body).to eq("Photo doesn't exist")
           expect(response).to have_http_status(:not_found)
         end
       end
 
       response '401', "Invalid token" do
-        schema type: :object,
-               properties: {
-                 errors: { type: :string },
-               }, example: {
-            errors: "decode error"
-          }
+        schema type: :string, example: "Decode error"
 
         let(:authorization) { "Bearer invalid token" }
         let(:id) { -1 }
 
         run_test! do |response|
+          expect(response.body).to eq("Decode error")
           expect(response).to have_http_status(:unauthorized)
         end
       end

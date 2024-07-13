@@ -2,7 +2,7 @@
 
 class UsersController < ApplicationController
   def show
-    return head :not_found unless User.exists?(params[:id])
+    return render plain: "User doesn't exist", status: :not_found unless User.exists?(params[:id])
 
     render json: User.find(params[:id]).as_json(
       include: { photos: { only: [:id], methods: :url } },

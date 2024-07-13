@@ -33,17 +33,13 @@ RSpec.describe 'Auth', type: :request do
       end
 
       response '401', "Enter invalid credentials" do
-        schema type: :object,
-               properties: {
-                 errors: { type: :string },
-               }, example: {
-            errors: "Unauthorized"
-          }
+        schema type: :string, example: "Unauthorized"
 
         let(:handle) { Faker::Name.first_name }
         let(:password) { Faker::Internet.password }
 
         run_test! do |response|
+          expect(response.body).to eq("Unauthorized")
           expect(response).to have_http_status(:unauthorized)
         end
       end
