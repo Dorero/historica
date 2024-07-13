@@ -9,7 +9,7 @@ class AuthController < ApplicationController
     if user&.authenticate(params[:password])
       render json: { token: JwtService.encode(user_id: user.id), expires_at: 24.hours.from_now }, status: :ok
     else
-      render json: { errors: 'Unauthorized' }, status: :unauthorized
+      render plain: 'Unauthorized', status: :unauthorized
     end
   end
 
@@ -24,7 +24,7 @@ class AuthController < ApplicationController
         body: user.as_json(include: { photos: { only: [:id], methods: :url } })
       }, status: :created
     else
-      render json: { errors: user.errors.messages }, status: :unprocessable_entity
+      render json: { errors: user.errors.messages }, status: :unprocessable_content
     end
   end
 

@@ -57,25 +57,23 @@ RSpec.describe "Users", type: :request do
       end
 
       response '401', "Invalid token" do
-        schema type: :object,
-               properties: {
-                 errors: { type: :string },
-               }, example: {
-            errors: "decode error"
-          }
+        schema type: :string, example: "Decode error"
 
         let(:authorization) { "Bearer invalid token" }
         let(:id) { -1 }
 
         run_test! do |response|
+          expect(response.body).to eq("Decode error")
           expect(response).to have_http_status(:unauthorized)
         end
       end
 
       response '404', "User not found" do
+        schema type: :string, example: "User doesn't exist"
         let(:id) { -1 }
 
         run_test! do |response|
+          expect(response.body).to eq("User doesn't exist")
           expect(response).to have_http_status(:not_found)
         end
       end

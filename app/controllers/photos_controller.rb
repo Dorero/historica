@@ -15,10 +15,10 @@ class PhotosController < ApplicationController
   end
 
   def destroy
-    return head :not_found unless Photo.exists?(params[:id])
+    return render plain: "Photo doesn't exist", status: :not_found unless Photo.exists?(params[:id])
 
     Photo.destroy(params[:id])
-    head :ok
+    render plain: 'Photo successfully deleted', status: :ok
   end
 
   private

@@ -73,12 +73,7 @@ RSpec.describe "Reviews", type: :request do
       end
 
       response '401', "Invalid token" do
-        schema type: :object,
-               properties: {
-                 errors: { type: :string },
-               }, example: {
-            errors: "decode error"
-          }
+        schema type: :string, example: "Decode error"
 
         let(:authorization) { "Bearer invalid token" }
         let(:review) { build(:review, user_id: user.id, place_id: create(:place).id) }

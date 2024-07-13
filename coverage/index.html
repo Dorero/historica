@@ -14,7 +14,7 @@
       <img src="./assets/0.12.3/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2024-07-13T11:23:10+03:00">2024-07-13T11:23:10+03:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2024-07-13T15:33:42+03:00">2024-07-13T15:33:42+03:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -1123,7 +1123,7 @@
 
             
 
-            <code class="ruby">    render json: { errors: &#39;unauthorized&#39; }, status: :unauthorized</code>
+            <code class="ruby">    render plain: &#39;Unauthorized&#39;, status: :unauthorized</code>
           </li>
         </div>
       
@@ -1167,7 +1167,7 @@
 
             
 
-            <code class="ruby">    render json: { errors: &#39;invalid token&#39; }, status: :unauthorized</code>
+            <code class="ruby">    render plain: &#39;Invalid token&#39;, status: :unauthorized</code>
           </li>
         </div>
       
@@ -1211,7 +1211,7 @@
 
             
 
-            <code class="ruby">    render json: { errors: &#39;decode error&#39; }, status: :unauthorized</code>
+            <code class="ruby">    render plain: &#39;Decode error&#39;, status: :unauthorized</code>
           </li>
         </div>
       
@@ -1396,7 +1396,7 @@
 
             
 
-            <code class="ruby">      render json: { errors: &#39;Unauthorized&#39; }, status: :unauthorized</code>
+            <code class="ruby">      render plain: &#39;Unauthorized&#39;, status: :unauthorized</code>
           </li>
         </div>
       
@@ -1561,7 +1561,7 @@
 
             
 
-            <code class="ruby">      render json: { errors: user.errors.messages }, status: :unprocessable_entity</code>
+            <code class="ruby">      render json: { errors: user.errors.messages }, status: :unprocessable_content</code>
           </li>
         </div>
       
@@ -1955,7 +1955,7 @@
 
             
 
-            <code class="ruby">    return head :not_found unless Photo.exists?(params[:id])</code>
+            <code class="ruby">    return render plain: &quot;Photo doesn&#39;t exist&quot;, status: :not_found unless Photo.exists?(params[:id])</code>
           </li>
         </div>
       
@@ -1988,7 +1988,7 @@
 
             
 
-            <code class="ruby">    head :ok</code>
+            <code class="ruby">    render plain: &#39;Photo successfully deleted&#39;, status: :ok</code>
           </li>
         </div>
       
@@ -2338,7 +2338,7 @@
 
             
 
-            <code class="ruby">    return head :not_found unless Place.exists?(params[:id])</code>
+            <code class="ruby">    return render plain: &quot;Place doesn&#39;t exist&quot;, status: :not_found unless Place.exists?(params[:id])</code>
           </li>
         </div>
       
@@ -2580,7 +2580,7 @@
 
             
 
-            <code class="ruby">    return head :not_found unless Place.exists?(params[:id])</code>
+            <code class="ruby">    return render plain: &quot;Place doesn&#39;t exist&quot;, status: :not_found unless Place.exists?(params[:id])</code>
           </li>
         </div>
       
@@ -2712,7 +2712,7 @@
 
             
 
-            <code class="ruby">    return head :not_found unless Place.exists?(params[:id])</code>
+            <code class="ruby">    return render plain: &quot;Place doesn&#39;t exist&quot;, status: :not_found unless Place.exists?(params[:id])</code>
           </li>
         </div>
       
@@ -2745,7 +2745,7 @@
 
             
 
-            <code class="ruby">    head :ok</code>
+            <code class="ruby">    render plain: &#39;Place successfully deleted&#39;, status: :ok</code>
           </li>
         </div>
       
@@ -3863,7 +3863,7 @@
 
             
 
-            <code class="ruby">    return head :not_found unless User.exists?(params[:id])</code>
+            <code class="ruby">    return render plain: &quot;User doesn&#39;t exist&quot;, status: :not_found unless User.exists?(params[:id])</code>
           </li>
         </div>
       
