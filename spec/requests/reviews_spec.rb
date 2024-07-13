@@ -141,5 +141,92 @@ RSpec.describe "Reviews", type: :request do
         end
       end
     end
+
+    put "Update review" do
+      tags 'Reviews'
+      consumes 'application/json'
+      produces 'application/json'
+      parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
+      parameter name: :id, in: :path, type: :string, require: true
+      parameter name: :review, in: :body, schema: {
+        type: :object,
+        properties: {
+          title: { type: :string },
+          content: { type: :string }
+        },
+        required: ['title']
+      }
+
+      response '200', "Successfully updated" do
+        schema type: :object,
+               properties: {
+                 id: { type: :integer },
+                 title: { type: :string },
+                 content: { type: :string },
+                 user_id: { type: :integer },
+                 place_id: { type: :integer },
+                 created_at: { type: :string, format: 'date-time' },
+                 updated_at: { type: :string, format: 'date-time' },
+               },
+               example: {
+                 "id": 1,
+                 "title": "accusamus",
+                 "content": "Ipsa est debitis. Sed assumenda ipsa. Voluptatibus dignissimos perferendis.",
+                 "user_id": 29,
+                 "place_id": 4,
+                 "created_at": "2024-07-12T17:49:53.375Z",
+                 "updated_at": "2024-07-12T17:49:53.375Z",
+               }
+
+        let!(:created_review) { create(:review)}
+
+        let(:id) { created_review.id }
+
+        let(:review) { build(:review) }
+
+        run_test! do |response|
+          data = JSON(response.body)
+          expect(data["title"]).to eq(review.title)
+          expect(data["content"]).to eq(review.content)
+          expect(data["user_id"]).to eq(created_review.user_id)
+          expect(data["place_id"]).to eq(created_review.place_id)
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      response '422', "Without title" do
+        schema type: :object,
+               properties: {
+                 title: { type: :array, items: { type: :string } },
+               },
+               example: {
+                 "title": ["can't be blank"]
+               }
+
+
+        let!(:created_review) { create(:review)}
+
+        let(:id) { created_review.id }
+        let(:review) { build(:review, title: "") }
+
+        run_test! do |response|
+          expect(JSON(response.body)["errors"]["title"].first).to eq("can't be blank")
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+      end
+
+
+      response '404', "Review not found" do
+        schema type: :string, example: "Review doesn't exist"
+
+        let(:id) { -1 }
+        let(:review) { build(:review, title: "") }
+
+        run_test! do |response|
+          expect(response.body).to eq("Review doesn't exist")
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+    end
   end
 end

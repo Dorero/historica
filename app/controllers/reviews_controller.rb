@@ -14,6 +14,18 @@ class ReviewsController < ApplicationController
     end
   end
 
+  def update
+    return render plain: "Review doesn't exist", status: :not_found unless Review.exists?(params[:id])
+
+    review = Review.update(params[:id], title: params[:title], content: params[:content])
+
+    if review.save
+      render json: review, status: :ok
+    else
+      render json: { errors: review.errors.messages }, status: :unprocessable_content
+    end
+  end
+
   def destroy
     return render plain: "Review doesn't exist", status: :not_found unless Review.exists?(params[:id])
 
