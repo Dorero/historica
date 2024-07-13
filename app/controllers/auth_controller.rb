@@ -4,9 +4,9 @@ class AuthController < ApplicationController
   skip_before_action :authenticate, only: %i[sign_up sign_in]
 
   def sign_in
-    user = User.find_by_handle(params[:handle])
+    user = User.find_by_handle(permit_params[:handle])
 
-    if user&.authenticate(params[:password])
+    if user&.authenticate(permit_params[:password])
       render json: { token: JwtService.encode(user_id: user.id), expires_at: 24.hours.from_now }, status: :ok
     else
       render plain: 'Unauthorized', status: :unauthorized
@@ -21,7 +21,7 @@ class AuthController < ApplicationController
       render json: {
         token: JwtService.encode(user_id: user.id),
         expires_at: 24.hours.from_now,
-        body: user.as_json(include: { photos: { only: [:id], methods: :url } })
+        user: user.as_json(include: { photos: { only: [:id], methods: :url } })
       }, status: :created
     else
       render json: { errors: user.errors.messages }, status: :unprocessable_content
@@ -31,7 +31,7 @@ class AuthController < ApplicationController
   private
 
   def permit_params
-    params.permit(:first_name, :last_name, :handle, :password, photos: [])
+    params.require(:auth).permit(:first_name, :last_name, :handle, :password, photos: [])
   end
 
   def build_params(permit_params)

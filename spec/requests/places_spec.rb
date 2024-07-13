@@ -684,7 +684,7 @@ RSpec.describe "Places", type: :request do
                    created_at: { type: :string, format: 'date-time' },
                    updated_at: { type: :string, format: 'date-time' }
                  },
-                 required: ['id', 'title', 'content', 'user_id', 'place_id', 'created_at', 'updated_at']
+                 required: %w[id title content user_id place_id created_at updated_at]
                }
 
         let(:place) { create(:place) }

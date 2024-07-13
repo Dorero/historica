@@ -2,8 +2,8 @@
 
 class PhotosController < ApplicationController
   def create
-    imageable = build_imageable(params)
-    return render json: { errors: 'No such user or place found' }, status: :not_found if imageable.nil?
+    imageable = build_imageable(permit_params)
+    return render plain: 'No such user or place found', status: :not_found if imageable.nil?
 
     photo = Photo.create(permit_params.except(:image_for_id).merge(imageable:))
 
@@ -24,7 +24,7 @@ class PhotosController < ApplicationController
   private
 
   def permit_params
-    params.permit(:image, :image_for_id)
+    params.require(:photo).permit(:image, :image_for_id)
   end
 
   def build_imageable(params)

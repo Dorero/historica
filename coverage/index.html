@@ -14,7 +14,7 @@
       <img src="./assets/0.12.3/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2024-07-13T15:33:42+03:00">2024-07-13T15:33:42+03:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2024-07-13T20:10:34+03:00">2024-07-13T20:10:34+03:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -1341,7 +1341,7 @@
 
             
 
-            <code class="ruby">    user = User.find_by_handle(params[:handle])</code>
+            <code class="ruby">    user = User.find_by_handle(permit_params[:handle])</code>
           </li>
         </div>
       
@@ -1363,7 +1363,7 @@
 
             
 
-            <code class="ruby">    if user&amp;.authenticate(params[:password])</code>
+            <code class="ruby">    if user&amp;.authenticate(permit_params[:password])</code>
           </li>
         </div>
       
@@ -1528,7 +1528,7 @@
 
             
 
-            <code class="ruby">        body: user.as_json(include: { photos: { only: [:id], methods: :url } })</code>
+            <code class="ruby">        user: user.as_json(include: { photos: { only: [:id], methods: :url } })</code>
           </li>
         </div>
       
@@ -1638,7 +1638,7 @@
 
             
 
-            <code class="ruby">    params.permit(:first_name, :last_name, :handle, :password, photos: [])</code>
+            <code class="ruby">    params.require(:auth).permit(:first_name, :last_name, :handle, :password, photos: [])</code>
           </li>
         </div>
       
@@ -1812,7 +1812,7 @@
 
             
 
-            <code class="ruby">    imageable = build_imageable(params)</code>
+            <code class="ruby">    imageable = build_imageable(permit_params)</code>
           </li>
         </div>
       
@@ -1823,7 +1823,7 @@
 
             
 
-            <code class="ruby">    return render json: { errors: &#39;No such user or place found&#39; }, status: :not_found if imageable.nil?</code>
+            <code class="ruby">    return render plain: &#39;No such user or place found&#39;, status: :not_found if imageable.nil?</code>
           </li>
         </div>
       
@@ -2054,7 +2054,7 @@
 
             
 
-            <code class="ruby">    params.permit(:image, :image_for_id)</code>
+            <code class="ruby">    params.require(:photo).permit(:image, :image_for_id)</code>
           </li>
         </div>
       
