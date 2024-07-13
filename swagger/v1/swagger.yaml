@@ -735,6 +735,64 @@ paths:
                   errors: decode error
         '404':
           description: Place not found
+  "/places/{id}/reviews":
+    get:
+      summary: Collection of place reviews
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Collection reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    content:
+                      type: string
+                    user_id:
+                      type: integer
+                    place_id:
+                      type: integer
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+                  required:
+                  - id
+                  - title
+                  - content
+                  - user_id
+                  - place_id
+                  - created_at
+                  - updated_at
+        '404':
+          description: Place not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Place doesn't exist
   "/reviews":
     post:
       summary: Create review

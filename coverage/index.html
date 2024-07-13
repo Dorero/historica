@@ -14,7 +14,7 @@
       <img src="./assets/0.12.3/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2024-07-13T11:18:39+03:00">2024-07-13T11:18:39+03:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2024-07-13T11:23:10+03:00">2024-07-13T11:23:10+03:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -43,9 +43,9 @@
   </div>
 
   <div class="t-line-summary">
-    <b>302</b> relevant lines,
+    <b>306</b> relevant lines,
     <span class="green"><b>0</b> lines covered</span> and
-    <span class="red"><b>302</b> lines missed. </span>
+    <span class="red"><b>306</b> lines missed. </span>
     (<span class="red">
   0.0%
 </span>
@@ -106,10 +106,10 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#78deafe498e0b87cdee3105fb65ce9a9cd4f812e" class="src_link" title="app/controllers/places_controller.rb">app/controllers/places_controller.rb</a></td>
             <td class="red strong cell--number t-file__coverage">0.00 %</td>
-            <td class="cell--number">95</td>
-            <td class="cell--number">74</td>
+            <td class="cell--number">101</td>
+            <td class="cell--number">78</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">74</td>
+            <td class="cell--number">78</td>
             <td class="cell--number">0.00</td>
             
           </tr>
@@ -278,9 +278,9 @@
   </div>
 
   <div class="t-line-summary">
-    <b>195</b> relevant lines,
+    <b>199</b> relevant lines,
     <span class="green"><b>0</b> lines covered</span> and
-    <span class="red"><b>195</b> lines missed. </span>
+    <span class="red"><b>199</b> lines missed. </span>
     (<span class="red">
   0.0%
 </span>
@@ -341,10 +341,10 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#78deafe498e0b87cdee3105fb65ce9a9cd4f812e" class="src_link" title="app/controllers/places_controller.rb">app/controllers/places_controller.rb</a></td>
             <td class="red strong cell--number t-file__coverage">0.00 %</td>
-            <td class="cell--number">95</td>
-            <td class="cell--number">74</td>
+            <td class="cell--number">101</td>
+            <td class="cell--number">78</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">74</td>
+            <td class="cell--number">78</td>
             <td class="cell--number">0.00</td>
             
           </tr>
@@ -2176,9 +2176,9 @@
     
 
     <div class="t-line-summary">
-      <b>74</b> relevant lines.
+      <b>78</b> relevant lines.
       <span class="green"><b>0</b> lines covered</span> and
-      <span class="red"><b>74</b> lines missed.</span>
+      <span class="red"><b>78</b> lines missed.</span>
     </div>
 
     
@@ -2778,12 +2778,23 @@
 
             
 
-            <code class="ruby">  private</code>
+            <code class="ruby">  def reviews</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="55">
+          <li class="missed" data-hits="0" data-linenumber="55">
+            
+            
+
+            
+
+            <code class="ruby">    return render plain: &quot;Place doesn&#39;t exist&quot;, status: :not_found unless Place.exists?(params[:id])</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="56">
             
             
 
@@ -2794,24 +2805,13 @@
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="56">
-            
-            
-
-            
-
-            <code class="ruby">  def permit_params</code>
-          </li>
-        </div>
-      
-        <div>
           <li class="missed" data-hits="0" data-linenumber="57">
             
             
 
             
 
-            <code class="ruby">    params.require(:place).permit(:title, :description, :date, :longitude, :latitude, photos: [])</code>
+            <code class="ruby">    render json: Place.find(params[:id]).reviews, status: :ok</code>
           </li>
         </div>
       
@@ -2844,18 +2844,18 @@
 
             
 
-            <code class="ruby">  def build_filters(params)</code>
+            <code class="ruby">  private</code>
           </li>
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="61">
+          <li class="never" data-hits="" data-linenumber="61">
             
             
 
             
 
-            <code class="ruby">    is_begin_date_present = params[:begin_date].present?</code>
+            <code class="ruby"></code>
           </li>
         </div>
       
@@ -2866,18 +2866,18 @@
 
             
 
-            <code class="ruby">    is_end_date_present = params[:end_date].present?</code>
+            <code class="ruby">  def permit_params</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="63">
+          <li class="missed" data-hits="0" data-linenumber="63">
             
             
 
             
 
-            <code class="ruby"></code>
+            <code class="ruby">    params.require(:place).permit(:title, :description, :date, :longitude, :latitude, photos: [])</code>
           </li>
         </div>
       
@@ -2888,18 +2888,18 @@
 
             
 
-            <code class="ruby">    if is_begin_date_present &amp;&amp; params[:end_date].blank?</code>
+            <code class="ruby">  end</code>
           </li>
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="65">
+          <li class="never" data-hits="" data-linenumber="65">
             
             
 
             
 
-            <code class="ruby">      return &quot;date &gt;= #{params[:begin_date]}&quot;</code>
+            <code class="ruby"></code>
           </li>
         </div>
       
@@ -2910,7 +2910,7 @@
 
             
 
-            <code class="ruby">    elsif params[:begin_date].blank? &amp;&amp; is_end_date_present</code>
+            <code class="ruby">  def build_filters(params)</code>
           </li>
         </div>
       
@@ -2921,7 +2921,7 @@
 
             
 
-            <code class="ruby">      return &quot;date &lt; #{params[:end_date]}&quot;</code>
+            <code class="ruby">    is_begin_date_present = params[:begin_date].present?</code>
           </li>
         </div>
       
@@ -2932,18 +2932,18 @@
 
             
 
-            <code class="ruby">    elsif is_begin_date_present &amp;&amp; is_end_date_present</code>
+            <code class="ruby">    is_end_date_present = params[:end_date].present?</code>
           </li>
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="69">
+          <li class="never" data-hits="" data-linenumber="69">
             
             
 
             
 
-            <code class="ruby">      return &quot;date &gt;= #{params[:begin_date]} AND date &lt;= #{params[:end_date]}&quot;</code>
+            <code class="ruby"></code>
           </li>
         </div>
       
@@ -2954,18 +2954,18 @@
 
             
 
-            <code class="ruby">    end</code>
+            <code class="ruby">    if is_begin_date_present &amp;&amp; params[:end_date].blank?</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="71">
+          <li class="missed" data-hits="0" data-linenumber="71">
             
             
 
             
 
-            <code class="ruby"></code>
+            <code class="ruby">      return &quot;date &gt;= #{params[:begin_date]}&quot;</code>
           </li>
         </div>
       
@@ -2976,7 +2976,7 @@
 
             
 
-            <code class="ruby">    &#39;&#39;</code>
+            <code class="ruby">    elsif params[:begin_date].blank? &amp;&amp; is_end_date_present</code>
           </li>
         </div>
       
@@ -2987,18 +2987,18 @@
 
             
 
-            <code class="ruby">  end</code>
+            <code class="ruby">      return &quot;date &lt; #{params[:end_date]}&quot;</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="74">
+          <li class="missed" data-hits="0" data-linenumber="74">
             
             
 
             
 
-            <code class="ruby"></code>
+            <code class="ruby">    elsif is_begin_date_present &amp;&amp; is_end_date_present</code>
           </li>
         </div>
       
@@ -3009,7 +3009,7 @@
 
             
 
-            <code class="ruby">  def build_params(permit_params)</code>
+            <code class="ruby">      return &quot;date &gt;= #{params[:begin_date]} AND date &lt;= #{params[:end_date]}&quot;</code>
           </li>
         </div>
       
@@ -3020,29 +3020,29 @@
 
             
 
-            <code class="ruby">    permit_params.except(:photos, :latitude, :longitude).merge(_geo: build_geo(permit_params))</code>
+            <code class="ruby">    end</code>
           </li>
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="77">
-            
-            
-
-            
-
-            <code class="ruby">  end</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="78">
+          <li class="never" data-hits="" data-linenumber="77">
             
             
 
             
 
             <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="78">
+            
+            
+
+            
+
+            <code class="ruby">    &#39;&#39;</code>
           </li>
         </div>
       
@@ -3053,18 +3053,18 @@
 
             
 
-            <code class="ruby">  def build_geo(params)</code>
+            <code class="ruby">  end</code>
           </li>
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="80">
+          <li class="never" data-hits="" data-linenumber="80">
             
             
 
             
 
-            <code class="ruby">    {</code>
+            <code class="ruby"></code>
           </li>
         </div>
       
@@ -3075,7 +3075,7 @@
 
             
 
-            <code class="ruby">      lat: params[:latitude].to_f,</code>
+            <code class="ruby">  def build_params(permit_params)</code>
           </li>
         </div>
       
@@ -3086,7 +3086,7 @@
 
             
 
-            <code class="ruby">      lng: params[:longitude].to_f</code>
+            <code class="ruby">    permit_params.except(:photos, :latitude, :longitude).merge(_geo: build_geo(permit_params))</code>
           </li>
         </div>
       
@@ -3097,29 +3097,29 @@
 
             
 
-            <code class="ruby">    }</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="missed" data-hits="0" data-linenumber="84">
-            
-            
-
-            
-
             <code class="ruby">  end</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="85">
+          <li class="never" data-hits="" data-linenumber="84">
             
             
 
             
 
             <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="85">
+            
+            
+
+            
+
+            <code class="ruby">  def build_geo(params)</code>
           </li>
         </div>
       
@@ -3130,7 +3130,7 @@
 
             
 
-            <code class="ruby">  def build_sort(params)</code>
+            <code class="ruby">    {</code>
           </li>
         </div>
       
@@ -3141,7 +3141,7 @@
 
             
 
-            <code class="ruby">    [&quot;date:#{params[:sort].present? ? params[:sort] : &#39;desc&#39;}&quot;]</code>
+            <code class="ruby">      lat: params[:latitude].to_f,</code>
           </li>
         </div>
       
@@ -3152,18 +3152,18 @@
 
             
 
-            <code class="ruby">  end</code>
+            <code class="ruby">      lng: params[:longitude].to_f</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="89">
+          <li class="missed" data-hits="0" data-linenumber="89">
             
             
 
             
 
-            <code class="ruby"></code>
+            <code class="ruby">    }</code>
           </li>
         </div>
       
@@ -3174,18 +3174,18 @@
 
             
 
-            <code class="ruby">  def build_limit(params_limit)</code>
+            <code class="ruby">  end</code>
           </li>
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="91">
+          <li class="never" data-hits="" data-linenumber="91">
             
             
 
             
 
-            <code class="ruby">    limit = 20</code>
+            <code class="ruby"></code>
           </li>
         </div>
       
@@ -3196,7 +3196,7 @@
 
             
 
-            <code class="ruby">    limit = [params_limit.to_i, 50].min if params_limit.present?</code>
+            <code class="ruby">  def build_sort(params)</code>
           </li>
         </div>
       
@@ -3207,7 +3207,7 @@
 
             
 
-            <code class="ruby">    limit</code>
+            <code class="ruby">    [&quot;date:#{params[:sort].present? ? params[:sort] : &#39;desc&#39;}&quot;]</code>
           </li>
         </div>
       
@@ -3223,7 +3223,73 @@
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="95">
+          <li class="never" data-hits="" data-linenumber="95">
+            
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="96">
+            
+            
+
+            
+
+            <code class="ruby">  def build_limit(params_limit)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="97">
+            
+            
+
+            
+
+            <code class="ruby">    limit = 20</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="98">
+            
+            
+
+            
+
+            <code class="ruby">    limit = [params_limit.to_i, 50].min if params_limit.present?</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="99">
+            
+            
+
+            
+
+            <code class="ruby">    limit</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="100">
+            
+            
+
+            
+
+            <code class="ruby">  end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="101">
             
             
 

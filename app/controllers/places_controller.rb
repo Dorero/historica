@@ -51,6 +51,12 @@ class PlacesController < ApplicationController
     head :ok
   end
 
+  def reviews
+    return render plain: "Place doesn't exist", status: :not_found unless Place.exists?(params[:id])
+
+    render json: Place.find(params[:id]).reviews, status: :ok
+  end
+
   private
 
   def permit_params
