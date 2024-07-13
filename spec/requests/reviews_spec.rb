@@ -112,7 +112,7 @@ RSpec.describe "Reviews", type: :request do
       tags 'Reviews'
       produces 'application/json'
       parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
-      parameter name: :id, in: :path, type: :string, require: true
+      parameter name: :id, in: :path, type: :string
 
       response '200', "Successfully deleted" do
         schema type: :string, example: "Review successfully deleted"
@@ -142,7 +142,7 @@ RSpec.describe "Reviews", type: :request do
       consumes 'application/json'
       produces 'application/json'
       parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
-      parameter name: :id, in: :path, type: :string, require: true
+      parameter name: :id, in: :path, type: :string
       parameter name: :review, in: :body, schema: {
         type: :object,
         properties: {

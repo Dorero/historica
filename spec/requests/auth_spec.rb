@@ -1,15 +1,20 @@
 require 'rails_helper'
 require 'swagger_helper'
 
-
 RSpec.describe 'Auth', type: :request do
   path '/sign_in' do
     post 'Sign in' do
       tags 'Auth'
       consumes 'multipart/form-data'
       produces 'application/json'
-      parameter name: :handle, in: :formData, type: :string, required: true
-      parameter name: :password, in: :formData, type: :string, required: true
+      parameter name: :auth, in: :formData, schema: {
+        type: :object,
+        properties: {
+          handle: { type: :string },
+          password: { type: :string }
+        },
+        required: %w[handle password]
+      }
 
       response '200', "User sign in" do
         schema type: :object,
@@ -24,10 +29,17 @@ RSpec.describe 'Auth', type: :request do
 
         let!(:user) { create(:user) }
 
-        let(:handle) { user.handle }
-        let(:password) { user.password }
+        let(:auth) do
+          {
+            handle: user.handle,
+            password: user.password
+          }
+        end
 
         run_test! do |response|
+          data = JSON(response.body)
+          expect(data).to have_key("token")
+          expect(data).to have_key("expires_at")
           expect(response).to have_http_status(:ok)
         end
       end
@@ -35,8 +47,12 @@ RSpec.describe 'Auth', type: :request do
       response '401', "Enter invalid credentials" do
         schema type: :string, example: "Unauthorized"
 
-        let(:handle) { Faker::Name.first_name }
-        let(:password) { Faker::Internet.password }
+        let(:auth) do
+          {
+            handle: Faker::Name.first_name,
+            password: Faker::Internet.password
+          }
+        end
 
         run_test! do |response|
           expect(response.body).to eq("Unauthorized")
@@ -51,18 +67,25 @@ RSpec.describe 'Auth', type: :request do
       tags 'Auth'
       consumes 'multipart/form-data'
       produces 'application/json'
-      parameter name: :first_name, in: :formData, type: :string, required: true
-      parameter name: :last_name, in: :formData, type: :string
-      parameter name: :handle, in: :formData, type: :string, required: true
-      parameter name: :password, in: :formData, type: :string, required: true
-      parameter name: :photos, in: :formData, type: :array, items: { type: :file }
+      parameter name: :auth, in: :formData, schema: {
+        type: :object,
+        properties: {
+          first_name: { type: :string },
+          last_name: { type: :string },
+          handle: { type: :string },
+          password: { type: :string },
+          photos: { type: :array, items: { type: :string, format: :binary, description: 'Valid image extension: jpg, jpeg, png, webp' }, }
+
+        },
+        required: %w[first_name handle password]
+      }
 
       response '201', "User sign up" do
         schema type: :object,
                properties: {
                  token: { type: :string },
                  expires_at: { type: :string, format: 'date-time' },
-                 body: {
+                 user: {
                    type: :object,
                    properties: {
                      id: { type: :integer },
@@ -89,7 +112,7 @@ RSpec.describe 'Auth', type: :request do
                example: {
                  token: "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0MDgwLCJleHAiOjE3MjA4OTM1Mzl9.EX_LzQW-JiButQXXOohKiQ3D18k8NtZdQxY553mN_CY",
                  expires_at: "2024-07-13T17:58:59.404Z",
-                 body: {
+                 user: {
                    id: 4080,
                    first_name: "Laure",
                    last_name: "Feeney",
@@ -102,23 +125,25 @@ RSpec.describe 'Auth', type: :request do
                  }
                }
 
-        let(:first_name) { Faker::Name.first_name }
-        let(:last_name) { Faker::Name.last_name }
-        let(:handle) { Faker::Name.name }
-        let(:password) { Faker::Internet.password }
-        let(:photos) do
-          [
-            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
-          ]
+        let(:auth) do
+          {
+            first_name: Faker::Name.first_name,
+            last_name: Faker::Name.last_name,
+            handle: Faker::Name.first_name,
+            password: Faker::Internet.password,
+            photos: [
+              fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
+            ]
+          }
         end
 
         run_test! do |response|
-          data = JSON(response.body)["body"]
-          expect(data["first_name"]).to eq(first_name)
+          data = JSON(response.body)["user"]
+          expect(data["first_name"]).to eq(auth[:first_name])
           expect(data["photos"].first["id"]).not_to eq(nil)
           expect(data["photos"].first["url"]).not_to eq(nil)
-          expect(data["last_name"]).to eq(last_name)
-          expect(data["handle"]).to eq(handle)
+          expect(data["last_name"]).to eq(auth[:last_name])
+          expect(data["handle"]).to eq(auth[:handle])
           expect(PromoteJob.jobs.size).to eq(1)
           expect(response).to have_http_status(:created)
         end
@@ -144,16 +169,16 @@ RSpec.describe 'Auth', type: :request do
                  }
                }
 
-        let!(:user) { create(:user) }
-
-        let(:first_name) { Faker::Name.first_name }
-        let(:last_name) { Faker::Name.last_name }
-        let(:handle) { Faker::Name.name }
-        let(:password) { Faker::Internet.password }
-        let(:photos) do
-          [
-            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.pdf'), 'image/jpeg')
-          ]
+        let(:auth) do
+          {
+            first_name: Faker::Name.first_name,
+            last_name: Faker::Name.last_name,
+            handle: Faker::Name.first_name,
+            password: Faker::Internet.password,
+            photos: [
+              fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.pdf'), 'image/jpeg')
+            ]
+          }
         end
 
         run_test! do |response|
@@ -185,21 +210,23 @@ RSpec.describe 'Auth', type: :request do
 
         let!(:user) { create(:user) }
 
-        let(:first_name) { user.first_name }
-        let(:last_name) { user.last_name }
-        let(:handle) { user.handle }
-        let(:password) { user.password }
-        let(:photos) do
-          [
-            fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
-          ]
+        let(:auth) do
+          {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            handle: user.handle,
+            password: user.password,
+            photos: [
+              fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')
+            ]
+          }
         end
 
         run_test! do |response|
           errors = JSON(response.body)
           expect(PromoteJob.jobs.size).to eq(0)
           expect(errors["errors"]["handle"].first).to eq("has already been taken")
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
     end

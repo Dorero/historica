@@ -37,8 +37,15 @@ paths:
         content:
           multipart/form-data:
             schema:
-              type: string
-        required: true
+              type: object
+              properties:
+                handle:
+                  type: string
+                password:
+                  type: string
+              required:
+              - handle
+              - password
   "/sign_up":
     post:
       summary: Sign up
@@ -58,7 +65,7 @@ paths:
                   expires_at:
                     type: string
                     format: date-time
-                  body:
+                  user:
                     type: object
                     properties:
                       id:
@@ -91,7 +98,7 @@ paths:
                 example:
                   token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0MDgwLCJleHAiOjE3MjA4OTM1Mzl9.EX_LzQW-JiButQXXOohKiQ3D18k8NtZdQxY553mN_CY
                   expires_at: '2024-07-13T17:58:59.404Z'
-                  body:
+                  user:
                     id: 4080
                     first_name: Laure
                     last_name: Feeney
@@ -137,8 +144,26 @@ paths:
         content:
           multipart/form-data:
             schema:
-              type: string
-        required: true
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                handle:
+                  type: string
+                password:
+                  type: string
+                photos:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                    description: 'Valid image extension: jpg, jpeg, png, webp'
+              required:
+              - first_name
+              - handle
+              - password
   "/photos":
     post:
       summary: Create photo
@@ -208,12 +233,8 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: string
-                example:
-                  errors: No such user or place found
+                type: string
+                example: No such user or place found
         '422':
           description: Invalid image extension
           content:
@@ -249,9 +270,18 @@ paths:
         content:
           multipart/form-data:
             schema:
-              type: file
-        required: true
-        description: 'Valid image extension: jpg, jpeg, png, webp'
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: 'Valid image extension: jpg, jpeg, png, webp'
+                image_for_id:
+                  type: integer
+                  description: Id user or place
+              required:
+              - image
+              - image_for_id
   "/photos/{id}":
     delete:
       summary: Delete photo
@@ -884,7 +914,6 @@ paths:
           type: string
       - name: id
         in: path
-        require: true
         required: true
         schema:
           type: string
@@ -916,7 +945,6 @@ paths:
           type: string
       - name: id
         in: path
-        require: true
         required: true
         schema:
           type: string

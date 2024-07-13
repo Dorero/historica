@@ -4,8 +4,6 @@ require 'swagger_helper'
 RSpec.describe "Photos", type: :request do
   let!(:user) { create(:user) }
   let!(:authorization) { "Bearer #{JwtService.encode(user_id: user.id)}" }
-  let!(:image) { fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg')}
-  let!(:image_for_id) { user.id }
 
   path '/photos' do
     post 'Create photo' do
@@ -14,8 +12,14 @@ RSpec.describe "Photos", type: :request do
       produces 'application/json'
 
       parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
-      parameter name: :image, in: :formData, type: :file, required: true, description: 'Valid image extension: jpg, jpeg, png, webp'
-      parameter name: :image_for_id, in: :formData, type: :integer, required: true, description: 'Id user or place'
+      parameter name: :photo, in: :formData, schema: {
+        type: :object,
+        properties: {
+          image: { type: :string, format: :binary, description: 'Valid image extension: jpg, jpeg, png, webp' },
+          image_for_id: { type: :integer, description: 'Id user or place' }
+        },
+        required: %w[image image_for_id]
+      }
 
       response '201', "Photo created for user" do
         schema type: :object,
@@ -60,6 +64,10 @@ RSpec.describe "Photos", type: :request do
                  url: "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg"
                }
 
+        let(:photo) { {
+          image: fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg'),
+          image_for_id: user.id
+        } }
 
         run_test! do |response|
           data = JSON(response.body)
@@ -114,9 +122,10 @@ RSpec.describe "Photos", type: :request do
                  url: "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg"
                }
 
-        let!(:place) { create(:place) }
-        let!(:image_for_id) { place.id }
-
+        let(:photo) { {
+          image: fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg'),
+          image_for_id: create(:place).id
+        } }
 
         run_test! do |response|
           data = JSON(response.body)
@@ -129,19 +138,16 @@ RSpec.describe "Photos", type: :request do
 
       response '404', "Invalid imageable id" do
         before { PromoteJob.clear }
-        schema type: :object,
-               properties: {
-                 errors: { type: :string },
-               }, example: {
-            errors: "No such user or place found"
-          }
 
-        let!(:place) { create(:place) }
-        let!(:image_for_id) { -1 }
+        schema type: :string, example: 'No such user or place found'
 
+        let(:photo) { {
+          image: fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg'),
+          image_for_id: -1
+        } }
 
         run_test! do |response|
-          expect(JSON(response.body)["errors"]).to eq("No such user or place found")
+          expect(response.body).to eq("No such user or place found")
           expect(PromoteJob.jobs.size).to eq(0)
           expect(response).to have_http_status(:not_found)
         end
@@ -167,7 +173,10 @@ RSpec.describe "Photos", type: :request do
                  }
                }
 
-        let(:image) { fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.pdf'), 'image/jpeg')}
+        let(:photo) { {
+          image: fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.pdf'), 'image/jpeg'),
+          image_for_id: user.id
+        } }
 
         run_test! do |response|
           expect(PromoteJob.jobs.size).to eq(0)
@@ -180,6 +189,11 @@ RSpec.describe "Photos", type: :request do
       response '401', "Invalid token" do
         schema type: :string, example: "Decode error"
         let(:authorization) { "Bearer invalid token" }
+
+        let(:photo) { {
+          image: fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg'),
+          image_for_id: user.id
+        } }
 
         run_test! do |response|
           expect(response.body).to eq("Decode error")
