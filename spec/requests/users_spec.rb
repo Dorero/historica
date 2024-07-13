@@ -44,8 +44,6 @@ RSpec.describe "Users", type: :request do
                  "photos": [{ id: 332, "url": "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg" }]
                }
 
-        let!(:user) { create(:user) }
-
         let(:id) { user.id }
 
         run_test! do |response|

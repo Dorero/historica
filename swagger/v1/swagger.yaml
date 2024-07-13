@@ -736,6 +736,101 @@ paths:
                   errors: decode error
         '404':
           description: Place not found
+  "/reviews":
+    post:
+      summary: Create review
+      tags:
+      - Reviews
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Create review
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  content:
+                    type: string
+                  user_id:
+                    type: integer
+                  place_id:
+                    type: integer
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                example:
+                  id: 1
+                  title: accusamus
+                  content: Ipsa est debitis. Sed assumenda ipsa. Voluptatibus dignissimos
+                    perferendis.
+                  user_id: 29
+                  place_id: 4
+                  created_at: '2024-07-12T17:49:53.375Z'
+                  updated_at: '2024-07-12T17:49:53.375Z'
+        '422':
+          description: Without title
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: array
+                    items:
+                      type: string
+                example:
+                  title:
+                  - can't be blank
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: string
+                example:
+                  errors: decode error
+        '404':
+          description: Place not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Place doesn't exist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                place_id:
+                  type: integer
+                title:
+                  type: string
+                content:
+                  type: string
+              required:
+              - title
+              - user_id
+              - place_id
   "/users/{id}":
     get:
       summary: Show user
