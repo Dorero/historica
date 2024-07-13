@@ -5,6 +5,7 @@ class Place < ApplicationRecord
 
   meilisearch synchronous: true if Rails.env.test?
 
+  has_many :reviews
   has_many :photos, as: :imageable, dependent: :destroy
   accepts_nested_attributes_for :photos, allow_destroy: true
 

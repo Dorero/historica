@@ -226,6 +226,32 @@
         "branches": {
         }
       },
+      "/home/domeno/projects/historica/app/controllers/reviews_controller.rb": {
+        "lines": [
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
       "/home/domeno/projects/historica/app/controllers/users_controller.rb": {
         "lines": [
           null,
@@ -285,6 +311,7 @@
           null,
           0,
           0,
+          0,
           null,
           0,
           0,
@@ -319,6 +346,20 @@
         "branches": {
         }
       },
+      "/home/domeno/projects/historica/app/models/review.rb": {
+        "lines": [
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0
+        ],
+        "branches": {
+        }
+      },
       "/home/domeno/projects/historica/app/models/user.rb": {
         "lines": [
           null,
@@ -326,6 +367,7 @@
           0,
           0,
           null,
+          0,
           0,
           0,
           null,
@@ -443,6 +485,6 @@
         }
       }
     },
-    "timestamp": 1720808077
+    "timestamp": 1720855455
   }
 }
