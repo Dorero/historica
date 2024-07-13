@@ -18,16 +18,51 @@ RSpec.describe "Photos", type: :request do
       parameter name: :image_for_id, in: :formData, type: :integer, required: true, description: 'Id user or place'
 
       response '201', "Photo created for user" do
-        before { PromoteJob.clear }
         schema type: :object,
                properties: {
-                 body: { type: :object },
+                 id: { type: :integer },
+                 image_data: {
+                   type: :object,
+                   properties: {
+                     id: { type: :string },
+                     storage: { type: :string },
+                     metadata: {
+                       type: :object,
+                       properties: {
+                         filename: { type: :string },
+                         size: { type: :integer },
+                         mime_type: { type: :string }
+                       }
+                     }
+                   }
+                 },
+                 imageable_type: { type: :string },
+                 imageable_id: { type: :integer },
+                 created_at: { type: :string, format: 'date-time' },
+                 updated_at: { type: :string, format: 'date-time' },
+                 url: { type: :string }
                },
-               required: ['body']
+               example: {
+                 id: 351,
+                 image_data: {
+                   id: "108bb404d25beb37d05e9059e59c4d65.jpeg",
+                   storage: "store",
+                   metadata: {
+                     filename: "images.jpeg",
+                     size: 6891,
+                     mime_type: "image/jpeg"
+                   }
+                 },
+                 imageable_type: "User",
+                 imageable_id: 4099,
+                 created_at: "2024-07-12T18:08:47.804Z",
+                 updated_at: "2024-07-12T18:08:47.804Z",
+                 url: "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg"
+               }
 
 
         run_test! do |response|
-          data = JSON(response.body)["body"]
+          data = JSON(response.body)
           expect(PromoteJob.jobs.size).to eq(1)
           expect(data["imageable_type"]).to eq("User")
           expect(data["url"]).not_to eq(nil)
@@ -39,16 +74,52 @@ RSpec.describe "Photos", type: :request do
         before { PromoteJob.clear }
         schema type: :object,
                properties: {
-                 body: { type: :object },
+                 id: { type: :integer },
+                 image_data: {
+                   type: :object,
+                   properties: {
+                     id: { type: :string },
+                     storage: { type: :string },
+                     metadata: {
+                       type: :object,
+                       properties: {
+                         filename: { type: :string },
+                         size: { type: :integer },
+                         mime_type: { type: :string }
+                       }
+                     }
+                   }
+                 },
+                 imageable_type: { type: :string },
+                 imageable_id: { type: :integer },
+                 created_at: { type: :string, format: 'date-time' },
+                 updated_at: { type: :string, format: 'date-time' },
+                 url: { type: :string }
                },
-               required: ['body']
+               example: {
+                 id: 351,
+                 image_data: {
+                   id: "108bb404d25beb37d05e9059e59c4d65.jpeg",
+                   storage: "store",
+                   metadata: {
+                     filename: "images.jpeg",
+                     size: 6891,
+                     mime_type: "image/jpeg"
+                   }
+                 },
+                 imageable_type: "Place",
+                 imageable_id: 4099,
+                 created_at: "2024-07-12T18:08:47.804Z",
+                 updated_at: "2024-07-12T18:08:47.804Z",
+                 url: "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg"
+               }
 
         let!(:place) { create(:place) }
         let!(:image_for_id) { place.id }
 
 
         run_test! do |response|
-          data = JSON(response.body)["body"]
+          data = JSON(response.body)
           expect(data["imageable_type"]).to eq("Place")
           expect(data["url"]).not_to eq(nil)
           expect(PromoteJob.jobs.size).to eq(1)
@@ -61,8 +132,9 @@ RSpec.describe "Photos", type: :request do
         schema type: :object,
                properties: {
                  errors: { type: :string },
-               },
-               required: ['errors']
+               }, example: {
+            errors: "No such user or place found"
+          }
 
         let!(:place) { create(:place) }
         let!(:image_for_id) { -1 }
@@ -80,9 +152,20 @@ RSpec.describe "Photos", type: :request do
 
         schema type: :object,
                properties: {
-                 errors: { type: :object },
+                 errors: {
+                   type: :object,
+                   properties: {
+                     photos: { type: :array, items: { type: :string } },
+                     'photos.image': { type: :array, items: { type: :string } }
+                   }
+                 }
                },
-               required: ['errors']
+               example: {
+                 errors: {
+                   'photos.image' => ['extension must be one of: jpg, jpeg, png, webp'],
+                   'photos' => ['is invalid']
+                 }
+               }
 
         let(:image) { fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.pdf'), 'image/jpeg')}
 
@@ -98,8 +181,9 @@ RSpec.describe "Photos", type: :request do
         schema type: :object,
                properties: {
                  errors: { type: :string },
-               },
-               required: ['errors']
+               }, example: {
+            errors: "decode error"
+          }
 
         let(:authorization) { "Bearer invalid token" }
 
@@ -139,8 +223,9 @@ RSpec.describe "Photos", type: :request do
         schema type: :object,
                properties: {
                  errors: { type: :string },
-               },
-               required: ['errors']
+               }, example: {
+            errors: "decode error"
+          }
 
         let(:authorization) { "Bearer invalid token" }
         let(:id) { -1 }

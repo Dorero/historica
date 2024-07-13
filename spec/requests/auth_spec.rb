@@ -10,13 +10,17 @@ RSpec.describe 'Auth', type: :request do
       produces 'application/json'
       parameter name: :handle, in: :formData, type: :string, required: true
       parameter name: :password, in: :formData, type: :string, required: true
+
       response '200', "User sign in" do
         schema type: :object,
                properties: {
                  token: { type: :string },
                  expires_at: { type: :string, format: 'date-time' }
                },
-               required: ['token', 'expires_at']
+               example: {
+                 token: "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0MDcxLCJleHAiOjE3MjA4OTMzNDJ9.Wtuo76xtPXHURgriQ8eLRNytCRyASKLsPHQ0OA7sAhE",
+                 expires_at: "2024-07-13T17:55:42.533Z"
+               }
 
         let!(:user) { create(:user) }
 
@@ -32,8 +36,9 @@ RSpec.describe 'Auth', type: :request do
         schema type: :object,
                properties: {
                  errors: { type: :string },
-               },
-               required: ['errors']
+               }, example: {
+            errors: "Unauthorized"
+          }
 
         let(:handle) { Faker::Name.first_name }
         let(:password) { Faker::Internet.password }
@@ -60,9 +65,46 @@ RSpec.describe 'Auth', type: :request do
         schema type: :object,
                properties: {
                  token: { type: :string },
-                 expires_at: { type: :string, format: 'date-time' }
+                 expires_at: { type: :string, format: 'date-time' },
+                 body: {
+                   type: :object,
+                   properties: {
+                     id: { type: :integer },
+                     first_name: { type: :string },
+                     last_name: { type: :string },
+                     handle: { type: :string },
+                     password: { type: :string },
+                     password_digest: { type: :string },
+                     created_at: { type: :string, format: 'date-time' },
+                     updated_at: { type: :string, format: 'date-time' },
+                     photos: {
+                       type: :array,
+                       items: {
+                         type: :object,
+                         properties: {
+                           id: { type: :integer },
+                           url: { type: :string }
+                         }
+                       }
+                     }
+                   }
+                 }
                },
-               required: ['token', 'expires_at']
+               example: {
+                 token: "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0MDgwLCJleHAiOjE3MjA4OTM1Mzl9.EX_LzQW-JiButQXXOohKiQ3D18k8NtZdQxY553mN_CY",
+                 expires_at: "2024-07-13T17:58:59.404Z",
+                 body: {
+                   id: 4080,
+                   first_name: "Laure",
+                   last_name: "Feeney",
+                   handle: "Gregory Rowe",
+                   password: "8kfr1MBEUUhY3",
+                   password_digest: "$2a$04$BBCrIUzUjnwFSrs8ID1q6.OIGUP4N6gCi5FCI5dwSxuKRb6g16RGS",
+                   created_at: "2024-07-12T17:58:59.401Z",
+                   updated_at: "2024-07-12T17:58:59.401Z",
+                   photos: [{ id: 332, "url": "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg" }]
+                 }
+               }
 
         let(:first_name) { Faker::Name.first_name }
         let(:last_name) { Faker::Name.last_name }
@@ -91,9 +133,21 @@ RSpec.describe 'Auth', type: :request do
 
         schema type: :object,
                properties: {
-                 errors: { type: :object },
+                 errors: {
+                   type: :object,
+                   properties: {
+                     photos: { type: :array, items: { type: :string } },
+                     'photos.image': { type: :array, items: { type: :string } }
+                   }
+                 }
                },
-               required: ['errors']
+               example: {
+                 errors: {
+                   'photos.image' => ['extension must be one of: jpg, jpeg, png, webp'],
+                   'photos' => ['is invalid']
+                 }
+               }
+
         let!(:user) { create(:user) }
 
         let(:first_name) { Faker::Name.first_name }
@@ -107,8 +161,8 @@ RSpec.describe 'Auth', type: :request do
         end
 
         run_test! do |response|
-          expect(PromoteJob.jobs.size).to eq(0)
           errors = JSON(response.body)
+          expect(PromoteJob.jobs.size).to eq(0)
           expect(errors["errors"]["photos.image"].first).to eq("extension must be one of: jpg, jpeg, png, webp")
           expect(errors["errors"]["photos"].first).to eq("is invalid")
           expect(response).to have_http_status(:unprocessable_entity)
@@ -120,9 +174,19 @@ RSpec.describe 'Auth', type: :request do
 
         schema type: :object,
                properties: {
-                 errors: { type: :object },
+                 errors: {
+                   type: :object,
+                   properties: {
+                     handle: { type: :array, items: { type: :string } }
+                   }
+                 }
                },
-               required: ['errors']
+               example: {
+                 errors: {
+                   handle: ["has already been taken"]
+                 }
+               }
+
         let!(:user) { create(:user) }
 
         let(:first_name) { user.first_name }
@@ -136,8 +200,8 @@ RSpec.describe 'Auth', type: :request do
         end
 
         run_test! do |response|
-          expect(PromoteJob.jobs.size).to eq(0)
           errors = JSON(response.body)
+          expect(PromoteJob.jobs.size).to eq(0)
           expect(errors["errors"]["handle"].first).to eq("has already been taken")
           expect(response).to have_http_status(:unprocessable_entity)
         end
