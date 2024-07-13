@@ -1,39 +1,229 @@
 {
   "RSpec": {
     "coverage": {
+      "/home/domeno/projects/historica/app/models/user.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          null
+        ]
+      },
+      "/home/domeno/projects/historica/app/models/application_record.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          null
+        ]
+      },
+      "/home/domeno/projects/historica/app/models/photo.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          1,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/home/domeno/projects/historica/app/uploaders/photo_uploader.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          0,
+          0,
+          0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/home/domeno/projects/historica/app/service/jwt_service.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          6,
+          null,
+          6,
+          null,
+          null,
+          1,
+          7,
+          null,
+          null
+        ]
+      },
+      "/home/domeno/projects/historica/app/models/place.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          5,
+          null,
+          null,
+          1,
+          null,
+          1,
+          5,
+          0,
+          0,
+          null,
+          null,
+          5,
+          5,
+          null,
+          null,
+          1,
+          10,
+          null,
+          null
+        ]
+      },
+      "/home/domeno/projects/historica/app/sidekiq/place_trigger_index_job.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          0,
+          0,
+          null,
+          0,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/domeno/projects/historica/app/models/review.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null
+        ]
+      },
+      "/home/domeno/projects/historica/app/controllers/reviews_controller.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          4,
+          3,
+          null,
+          2,
+          null,
+          2,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          1,
+          2,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          null,
+          1,
+          9,
+          null,
+          null
+        ]
+      },
       "/home/domeno/projects/historica/app/controllers/application_controller.rb": {
         "lines": [
           null,
           null,
-          0,
-          0,
+          1,
+          1,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          1,
+          7,
+          7,
+          7,
+          null,
+          6,
           null,
           0,
+          null,
+          null,
+          1,
           0,
           null,
-          0,
           null,
-          0,
-          0,
-          0,
-          0,
+          1,
+          1,
           null,
-          0,
-          null,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
+          null
+        ]
       },
       "/home/domeno/projects/historica/app/controllers/auth_controller.rb": {
         "lines": [
@@ -226,32 +416,6 @@
         "branches": {
         }
       },
-      "/home/domeno/projects/historica/app/controllers/reviews_controller.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
       "/home/domeno/projects/historica/app/controllers/users_controller.rb": {
         "lines": [
           null,
@@ -270,136 +434,6 @@
         "branches": {
         }
       },
-      "/home/domeno/projects/historica/app/models/application_record.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/home/domeno/projects/historica/app/models/photo.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          0,
-          null,
-          0,
-          null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/home/domeno/projects/historica/app/models/place.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          0,
-          null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/home/domeno/projects/historica/app/models/review.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/home/domeno/projects/historica/app/models/user.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/home/domeno/projects/historica/app/service/jwt_service.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          0,
-          null,
-          0,
-          0,
-          null,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
       "/home/domeno/projects/historica/app/sidekiq/destroy_job.rb": {
         "lines": [
           null,
@@ -410,25 +444,6 @@
           0,
           0,
           null,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
-      },
-      "/home/domeno/projects/historica/app/sidekiq/place_trigger_index_job.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
           0,
           0,
           0,
@@ -457,34 +472,8 @@
         ],
         "branches": {
         }
-      },
-      "/home/domeno/projects/historica/app/uploaders/photo_uploader.rb": {
-        "lines": [
-          null,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0
-        ],
-        "branches": {
-        }
       }
     },
-    "timestamp": 1720855455
+    "timestamp": 1720856075
   }
 }
