@@ -14,7 +14,7 @@
       <img src="./assets/0.12.3/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2024-07-13T10:50:21+03:00">2024-07-13T10:50:21+03:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2024-07-13T11:18:39+03:00">2024-07-13T11:18:39+03:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -43,9 +43,9 @@
   </div>
 
   <div class="t-line-summary">
-    <b>298</b> relevant lines,
+    <b>302</b> relevant lines,
     <span class="green"><b>0</b> lines covered</span> and
-    <span class="red"><b>298</b> lines missed. </span>
+    <span class="red"><b>302</b> lines missed. </span>
     (<span class="red">
   0.0%
 </span>
@@ -128,10 +128,10 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#6d68db6eef79ea39bdedfa5a2ddca9fa835361ed" class="src_link" title="app/controllers/users_controller.rb">app/controllers/users_controller.rb</a></td>
             <td class="red strong cell--number t-file__coverage">0.00 %</td>
-            <td class="cell--number">12</td>
-            <td class="cell--number">9</td>
+            <td class="cell--number">18</td>
+            <td class="cell--number">13</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">9</td>
+            <td class="cell--number">13</td>
             <td class="cell--number">0.00</td>
             
           </tr>
@@ -278,9 +278,9 @@
   </div>
 
   <div class="t-line-summary">
-    <b>191</b> relevant lines,
+    <b>195</b> relevant lines,
     <span class="green"><b>0</b> lines covered</span> and
-    <span class="red"><b>191</b> lines missed. </span>
+    <span class="red"><b>195</b> lines missed. </span>
     (<span class="red">
   0.0%
 </span>
@@ -363,10 +363,10 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#6d68db6eef79ea39bdedfa5a2ddca9fa835361ed" class="src_link" title="app/controllers/users_controller.rb">app/controllers/users_controller.rb</a></td>
             <td class="red strong cell--number t-file__coverage">0.00 %</td>
-            <td class="cell--number">12</td>
-            <td class="cell--number">9</td>
+            <td class="cell--number">18</td>
+            <td class="cell--number">13</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">9</td>
+            <td class="cell--number">13</td>
             <td class="cell--number">0.00</td>
             
           </tr>
@@ -3734,9 +3734,9 @@
     
 
     <div class="t-line-summary">
-      <b>9</b> relevant lines.
+      <b>13</b> relevant lines.
       <span class="green"><b>0</b> lines covered</span> and
-      <span class="red"><b>9</b> lines missed.</span>
+      <span class="red"><b>13</b> lines missed.</span>
     </div>
 
     
@@ -3868,7 +3868,73 @@
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="12">
+          <li class="never" data-hits="" data-linenumber="12">
+            
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="13">
+            
+            
+
+            
+
+            <code class="ruby">  def reviews</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="14">
+            
+            
+
+            
+
+            <code class="ruby">    return render plain: &quot;User doesn&#39;t exist&quot;, status: :not_found unless User.exists?(params[:id])</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="15">
+            
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="16">
+            
+            
+
+            
+
+            <code class="ruby">    render json: User.find(params[:id]).reviews, status: :ok</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="17">
+            
+            
+
+            
+
+            <code class="ruby">  end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="18">
             
             
 
