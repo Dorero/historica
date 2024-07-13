@@ -672,4 +672,50 @@ RSpec.describe "Places", type: :request do
       end
     end
   end
+
+  path "/places/{id}/reviews" do
+    get "Collection of place reviews" do
+      tags 'Places'
+      produces 'application/json'
+      parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
+      parameter name: :id, in: :path, type: :integer, required: true
+
+      response "200", "Collection reviews" do
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :integer },
+                   title: { type: :string },
+                   content: { type: :string },
+                   user_id: { type: :integer },
+                   place_id: { type: :integer },
+                   created_at: { type: :string, format: 'date-time' },
+                   updated_at: { type: :string, format: 'date-time' }
+                 },
+                 required: ['id', 'title', 'content', 'user_id', 'place_id', 'created_at', 'updated_at']
+               }
+
+        let(:place) { create(:place) }
+        before { create_list(:review, 2, user_id: user.id, place_id: place.id) }
+        let(:id) { place.id }
+
+        run_test! do |response|
+          data = JSON(response.body)
+          expect(data.size).to eq(2)
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      response '404', "Place not found" do
+        schema type: :string, example: "Place doesn't exist"
+
+        let(:id) { -1 }
+
+        run_test! do |response|
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+    end
+  end
 end

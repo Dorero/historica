@@ -14,8 +14,12 @@ Rails.application.routes.draw do
   post "sign_in", to: "auth#sign_in"
   post "sign_up", to: "auth#sign_up"
 
-  resources :places
   resources :photos
+  resources :places do
+    member do
+      get :reviews
+    end
+  end
   resources :users, only: [:show] do
     member do
       get :reviews
