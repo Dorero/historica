@@ -18,7 +18,7 @@ class ReviewsController < ApplicationController
     return render plain: "Review doesn't exist", status: :not_found unless Review.exists?(params[:id])
 
     Review.destroy(params[:id])
-    render plain: "Review successfully deleted", status: :ok
+    render plain: 'Review successfully deleted', status: :ok
   end
 
   private
