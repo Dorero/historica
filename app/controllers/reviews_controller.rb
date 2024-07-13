@@ -14,6 +14,15 @@ class ReviewsController < ApplicationController
     end
   end
 
+  def destroy
+    return render plain: "Review doesn't exist", status: :not_found unless Review.exists?(params[:id])
+
+    Review.destroy(params[:id])
+    render plain: 'Review successfully deleted', status: :ok
+  end
+
+  private
+
   def permit_params
     params.require(:review).permit(:user_id, :place_id, :title, :content)
   end

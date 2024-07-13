@@ -274,7 +274,6 @@ paths:
           type: string
       - name: id
         in: path
-        description: Id of the photo
         required: true
         schema:
           type: string
@@ -831,6 +830,39 @@ paths:
               - title
               - user_id
               - place_id
+  "/reviews/{id}":
+    delete:
+      summary: Delete review
+      tags:
+      - Reviews
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        require: true
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully deleted
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Review successfully deleted
+        '404':
+          description: Review not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Review doesn't exist
   "/users/{id}":
     get:
       summary: Show user

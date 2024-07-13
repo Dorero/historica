@@ -43,7 +43,6 @@ RSpec.describe "Reviews", type: :request do
                  "updated_at": "2024-07-12T17:49:53.375Z",
                }
 
-        let(:id) { user.id }
         let(:review) { build(:review, user_id: user.id, place_id: create(:place).id) }
 
         run_test! do |response|
@@ -65,7 +64,6 @@ RSpec.describe "Reviews", type: :request do
                  "title": ["can't be blank"]
                }
 
-        let(:id) { user.id }
         let(:review) { build(:review, user_id: user.id, place_id: create(:place).id, title: "") }
 
         run_test! do |response|
@@ -83,7 +81,6 @@ RSpec.describe "Reviews", type: :request do
           }
 
         let(:authorization) { "Bearer invalid token" }
-        let(:id) { -1 }
         let(:review) { build(:review, user_id: user.id, place_id: create(:place).id) }
 
         run_test! do |response|
@@ -109,6 +106,37 @@ RSpec.describe "Reviews", type: :request do
 
         run_test! do |response|
           expect(response.body).to eq("Place doesn't exist")
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+    end
+  end
+
+  path "/reviews/{id}" do
+    delete "Delete review" do
+      tags 'Reviews'
+      produces 'application/json'
+      parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
+      parameter name: :id, in: :path, type: :string, require: true
+
+      response '200', "Successfully deleted" do
+        schema type: :string, example: "Review successfully deleted"
+
+        let(:id) { create(:review).id }
+
+        run_test! do |response|
+          expect(response.body).to eq("Review successfully deleted")
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      response '404', "Review not found" do
+        schema type: :string, example: "Review doesn't exist"
+
+        let(:id) { -1 }
+
+        run_test! do |response|
+          expect(response.body).to eq("Review doesn't exist")
           expect(response).to have_http_status(:not_found)
         end
       end

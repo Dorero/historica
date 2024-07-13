@@ -198,7 +198,7 @@ RSpec.describe "Photos", type: :request do
     delete 'Delete photo' do
       tags 'Photos'
       parameter name: :authorization, in: :header, type: :string, required: true, description: 'Authorization token'
-      parameter name: :id, in: :path, type: :string, description: 'Id of the photo'
+      parameter name: :id, in: :path, type: :string, required: true
 
       response '200', "Photo deleted" do
         let!(:photo) { create(:photo) }
