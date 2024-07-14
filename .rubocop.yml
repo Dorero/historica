@@ -10,6 +10,7 @@ AllCops:
     - 'spec/**/*'
     - 'config/**/*'
     - 'bin/**/*'
+    - 'lib/**/*'
     - "Rakefile"
     - "config.ru"
 
