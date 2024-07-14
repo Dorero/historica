@@ -24,6 +24,7 @@ group :development, :test do
   gem 'factory_bot', '~> 6.4', '>= 6.4.6'
   gem 'factory_bot_rails', '~> 6.4', '>= 6.4.3'
   gem 'faker', '~> 3.4', '>= 3.4.1'
+  gem 'lefthook', '~> 1.7', '>= 1.7.2'
   gem 'rspec-rails', '~> 6.1', '>= 6.1.3'
   gem 'rswag-specs', '~> 2.13'
   gem 'rubocop', '~> 1.64', '>= 1.64.1', require: false

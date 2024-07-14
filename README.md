@@ -24,7 +24,9 @@ And also do search by typing, and this will not damage your database!
 ## Search
 Meilisearch is used as a search engine. 
 Although the rest api has an endpoint that allows full-text search, for clients I strongly recommend using [meilisearch-js](https://github.com/meilisearch/meilisearch-js?tab=readme-ov-file) or a similar library for your programming language. 
-All libraries can be found on the [meilisearch website](https://www.meilisearch.com/docs/learn/what_is_meilisearch/sdks). With meilisearch you can find not only matches in the title or description, but even do a geo-search.
+All libraries can be found on the [meilisearch website](https://www.meilisearch.com/docs/learn/what_is_meilisearch/sdks). 
+With meilisearch you can find not only matches in the title or description, but even do a geo-search.
+And also do search by typing, and this will not damage your database!
 
 ## <a name="local_setup"></a>Local setup
 Requirements: docker and docker-compose must be installed on your machine.

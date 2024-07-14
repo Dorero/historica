@@ -1,0 +1,8 @@
+pre-commit:
+  commands:
+    lint:
+      run: rubocop
+    test:
+      run: bundle exec rspec
+    generate_badge:
+      run: bundle exec rake coverage:generate_badge
