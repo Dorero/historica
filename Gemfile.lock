@@ -136,6 +136,7 @@ GEM
     jwt (2.8.2)
       base64
     language_server-protocol (3.17.0.3)
+    lefthook (1.7.2)
     logger (1.6.0)
     loofah (2.22.0)
       crass (~> 1.0.2)
@@ -337,6 +338,7 @@ DEPENDENCIES
   faker (~> 3.4, >= 3.4.1)
   image_processing (~> 1.12, >= 1.12.2)
   jwt (~> 2.8, >= 2.8.2)
+  lefthook (~> 1.7, >= 1.7.2)
   meilisearch-rails (~> 0.13.1)
   pg (~> 1.1)
   puma (>= 5.0)
