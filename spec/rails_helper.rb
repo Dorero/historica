@@ -1,6 +1,8 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'simplecov'
+require "simplecov_json_formatter"
 SimpleCov.minimum_coverage 90
+SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
 SimpleCov.start 'rails' do
   add_filter '/bin/'
   add_filter '/db/'
@@ -10,6 +12,7 @@ SimpleCov.start 'rails' do
   add_filter '/app/channels/'
   add_filter '/app/mailers/'
 end
+
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
