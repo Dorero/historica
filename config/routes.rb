@@ -1,12 +1,29 @@
+require 'sidekiq/web'
+
+# Configure Sidekiq-specific session middleware
+Sidekiq::Web.use ActionDispatch::Cookies
+Sidekiq::Web.use ActionDispatch::Session::CookieStore, key: "_interslice_session"
+
 Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  mount Sidekiq::Web => '/sidekiq'
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  post "sign_in", to: "auth#sign_in"
+  post "sign_up", to: "auth#sign_up"
+
+  resources :photos
+  resources :places do
+    member do
+      get :reviews
+    end
+  end
+  resources :users, only: [:show] do
+    member do
+      get :reviews
+    end
+  end
+  resources :reviews
 end

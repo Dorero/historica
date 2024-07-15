@@ -1,0 +1,1178 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/sign_in":
+    post:
+      summary: Sign in
+      tags:
+      - Auth
+      parameters: []
+      responses:
+        '200':
+          description: User sign in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  expires_at:
+                    type: string
+                    format: date-time
+                example:
+                  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0MDcxLCJleHAiOjE3MjA4OTMzNDJ9.Wtuo76xtPXHURgriQ8eLRNytCRyASKLsPHQ0OA7sAhE
+                  expires_at: '2024-07-13T17:55:42.533Z'
+        '401':
+          description: Enter invalid credentials
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Unauthorized
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                handle:
+                  type: string
+                password:
+                  type: string
+              required:
+              - handle
+              - password
+  "/sign_up":
+    post:
+      summary: Sign up
+      tags:
+      - Auth
+      parameters: []
+      responses:
+        '201':
+          description: User sign up
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  expires_at:
+                    type: string
+                    format: date-time
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+                      handle:
+                        type: string
+                      password:
+                        type: string
+                      password_digest:
+                        type: string
+                      created_at:
+                        type: string
+                        format: date-time
+                      updated_at:
+                        type: string
+                        format: date-time
+                      photos:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            url:
+                              type: string
+                example:
+                  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0MDgwLCJleHAiOjE3MjA4OTM1Mzl9.EX_LzQW-JiButQXXOohKiQ3D18k8NtZdQxY553mN_CY
+                  expires_at: '2024-07-13T17:58:59.404Z'
+                  user:
+                    id: 4080
+                    first_name: Laure
+                    last_name: Feeney
+                    handle: Gregory Rowe
+                    password: 8kfr1MBEUUhY3
+                    password_digest: "$2a$04$BBCrIUzUjnwFSrs8ID1q6.OIGUP4N6gCi5FCI5dwSxuKRb6g16RGS"
+                    created_at: '2024-07-12T17:58:59.401Z'
+                    updated_at: '2024-07-12T17:58:59.401Z'
+                    photos:
+                    - id: 332
+                      url: "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg"
+        '422':
+          description: User already register
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      photos:
+                        type: array
+                        items:
+                          type: string
+                      photos.image:
+                        type: array
+                        items:
+                          type: string
+                      handle:
+                        type: array
+                        items:
+                          type: string
+                example:
+                  errors:
+                    photos.image:
+                    - 'extension must be one of: jpg, jpeg, png, webp'
+                    photos:
+                    - is invalid
+                    handle:
+                    - has already been taken
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                handle:
+                  type: string
+                password:
+                  type: string
+                photos:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                    description: 'Valid image extension: jpg, jpeg, png, webp'
+              required:
+              - first_name
+              - handle
+              - password
+  "/photos":
+    post:
+      summary: Create photo
+      tags:
+      - Photos
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Photo created for place
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  image_data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      storage:
+                        type: string
+                      metadata:
+                        type: object
+                        properties:
+                          filename:
+                            type: string
+                          size:
+                            type: integer
+                          mime_type:
+                            type: string
+                  imageable_type:
+                    type: string
+                  imageable_id:
+                    type: integer
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                  url:
+                    type: string
+                example:
+                  id: 351
+                  image_data:
+                    id: 108bb404d25beb37d05e9059e59c4d65.jpeg
+                    storage: store
+                    metadata:
+                      filename: images.jpeg
+                      size: 6891
+                      mime_type: image/jpeg
+                  imageable_type: Place
+                  imageable_id: 4099
+                  created_at: '2024-07-12T18:08:47.804Z'
+                  updated_at: '2024-07-12T18:08:47.804Z'
+                  url: "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg"
+        '404':
+          description: Invalid imageable id
+          content:
+            application/json:
+              schema:
+                type: string
+                example: No such user or place found
+        '422':
+          description: Invalid image extension
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      photos:
+                        type: array
+                        items:
+                          type: string
+                      photos.image:
+                        type: array
+                        items:
+                          type: string
+                example:
+                  errors:
+                    photos.image:
+                    - 'extension must be one of: jpg, jpeg, png, webp'
+                    photos:
+                    - is invalid
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Decode error
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: 'Valid image extension: jpg, jpeg, png, webp'
+                imageable_id:
+                  type: integer
+                  description: Id user or place
+                imageable_type:
+                  type: string
+                  description: User or Place
+              required:
+              - image
+              - image_for_id
+  "/photos/{id}":
+    delete:
+      summary: Delete photo
+      tags:
+      - Photos
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Photo deleted
+        '404':
+          description: Photo not found
+        '401':
+          description: Invalid token
+  "/places":
+    get:
+      summary: Collection places
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token.
+        schema:
+          type: string
+      - name: begin_date
+        in: query
+        description: Date should be in UNIX time format and must be in seconds. This
+          parameter specifies from what time period places should be shown.
+        example: 1720533451
+        schema:
+          type: integer
+      - name: end_date
+        in: query
+        description: Date should be in UNIX time format and must be in seconds. This
+          parameter specifies until what time period places should be shown.
+        example: 1720619851
+        schema:
+          type: integer
+      - name: sort
+        in: query
+        description: 'Sort have two type: desc or asc. Sorting occurs by the date
+          parameter. If the parameter is not specified, then sort by default by desc.'
+        example: asc
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Skips a number of search results. By default 0.
+        example: 0
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        description: Maximum search result, but not more than 50. By default 20
+        example: 30
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Should return collection until end date
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    date:
+                      type: integer
+                    _geo:
+                      type: object
+                      properties:
+                        lat:
+                          type: number
+                          format: float
+                        lng:
+                          type: number
+                          format: float
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+                example:
+                - id: 2402
+                  title: Shalonda Terry
+                  description: Geraldine Huels
+                  date: 1720632325
+                  _geo:
+                    lat: -60.559753407124504
+                    lng: 38.80482239138121
+                  created_at: '2024-07-12T17:25:25.573Z'
+                  updated_at: '2024-07-12T17:25:25.573Z'
+                - id: 2403
+                  title: Brenna Toy
+                  description: Samatha Weimann PhD
+                  date: 1720718725
+                  _geo:
+                    lat: -18.228828903020116
+                    lng: -116.22143055678555
+                  created_at: '2024-07-12T17:25:25.574Z'
+                  updated_at: '2024-07-12T17:25:25.574Z'
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Decode error
+    post:
+      summary: Create place
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Place created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  date:
+                    type: integer
+                  _geo:
+                    type: object
+                    properties:
+                      lat:
+                        type: number
+                        format: float
+                      lng:
+                        type: number
+                        format: float
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                  photos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        url:
+                          type: string
+                example:
+                  id: 2285
+                  title: Kendrick Upton DDS
+                  description: Rep. Telma Kohler
+                  date: 1719883892
+                  _geo:
+                    lat: 6.878716694431873
+                    lng: 122.72957393381876
+                  created_at: '2024-07-12T14:31:49.535Z'
+                  updated_at: '2024-07-12T14:31:49.535Z'
+                  photos:
+                  - id: 332
+                    url: "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg"
+        '422':
+          description: Enter invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  photos.image:
+                  - 'extension must be one of: jpg, jpeg, png, webp'
+                  title:
+                  - can't be blank
+                  date:
+                  - can't be blank
+                  _geo:
+                  - latitude must be a number between -90 and 90
+                  - longitude must be a number between -180 and 180
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Decode error
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                date:
+                  type: integer
+                  description: Date should be in UNIX time format and must be in seconds
+                  example: 1720619851
+                latitude:
+                  type: number
+                  format: float
+                  example: -55.7875842956319
+                longitude:
+                  type: number
+                  format: float
+                  example: 18.207674420842892
+                photos:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+              - title
+              - date
+              - latitude
+              - longitude
+  "/places/{id}":
+    delete:
+      summary: Delete place
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the place
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Place deleted
+        '404':
+          description: Place not found
+        '401':
+          description: Invalid token
+    put:
+      summary: Update place
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the place
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Place updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  date:
+                    type: integer
+                  _geo:
+                    type: object
+                    properties:
+                      lat:
+                        type: number
+                        format: float
+                      lng:
+                        type: number
+                        format: float
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                  photos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        url:
+                          type: string
+                example:
+                  id: 2285
+                  title: Kendrick Upton DDS
+                  description: Rep. Telma Kohler
+                  date: 1719883892
+                  _geo:
+                    lat: 6.878716694431873
+                    lng: 122.72957393381876
+                  created_at: '2024-07-12T14:31:49.535Z'
+                  updated_at: '2024-07-12T14:31:49.535Z'
+                  photos:
+                  - id: 332
+                    url: "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg"
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Decode error
+        '404':
+          description: Place not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Place doesn't exist
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: My Place
+                description:
+                  type: string
+                  example: A description of my place
+                date:
+                  type: integer
+                  description: Date should be in UNIX time format and must be in seconds
+                  example: 1720619851
+                latitude:
+                  type: number
+                  format: float
+                  example: -55.7875842956319
+                longitude:
+                  type: number
+                  format: float
+                  example: 18.207674420842892
+              required:
+              - title
+              - date
+              - latitude
+              - longitude
+    get:
+      summary: Show place
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Id of the place
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Show place
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  date:
+                    type: integer
+                  _geo:
+                    type: object
+                    properties:
+                      lat:
+                        type: number
+                        format: float
+                      lng:
+                        type: number
+                        format: float
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                  photos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        url:
+                          type: string
+                example:
+                  id: 2285
+                  title: Kendrick Upton DDS
+                  description: Rep. Telma Kohler
+                  date: 1719883892
+                  _geo:
+                    lat: 6.878716694431873
+                    lng: 122.72957393381876
+                  created_at: '2024-07-12T14:31:49.535Z'
+                  updated_at: '2024-07-12T14:31:49.535Z'
+                  photos:
+                  - id: 332
+                    url: "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg"
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Decode error
+        '404':
+          description: Place not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Place doesn't exist
+  "/places/{id}/reviews":
+    get:
+      summary: Collection of place reviews
+      tags:
+      - Places
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Collection reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    content:
+                      type: string
+                    user_id:
+                      type: integer
+                    reviewable_id:
+                      type: integer
+                      description: Id review or place
+                    reviewable_type:
+                      type: string
+                      description: Review or Place
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+                  required:
+                  - id
+                  - title
+                  - content
+                  - user_id
+                  - reviewable_id
+                  - reviewable_type
+                  - created_at
+                  - updated_at
+        '404':
+          description: Place not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Place doesn't exist
+  "/reviews":
+    post:
+      summary: Create review
+      tags:
+      - Reviews
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Create review with review parent type
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  content:
+                    type: string
+                  user_id:
+                    type: integer
+                  reviewable_id:
+                    type: integer
+                  reviewable_type:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                example:
+                  id: 1
+                  title: accusamus
+                  content: Ipsa est debitis. Sed assumenda ipsa. Voluptatibus dignissimos
+                    perferendis.
+                  user_id: 29
+                  reviewable_id: 4
+                  type: Place
+                  created_at: '2024-07-12T17:49:53.375Z'
+                  updated_at: '2024-07-12T17:49:53.375Z'
+        '422':
+          description: Without title
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: array
+                    items:
+                      type: string
+                example:
+                  title:
+                  - can't be blank
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Decode error
+        '404':
+          description: Parent, review type, not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Parent review doesn't exist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                reviewable_id:
+                  type: integer
+                  description: Id review or place
+                reviewable_type:
+                  type: string
+                  description: Review or Place
+                title:
+                  type: string
+                content:
+                  type: string
+              required:
+              - title
+              - user_id
+              - reviewable_id
+              - reviewable_type
+  "/reviews/{id}":
+    delete:
+      summary: Delete review
+      tags:
+      - Reviews
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully deleted
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Review successfully deleted
+        '404':
+          description: Review not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Review doesn't exist
+    put:
+      summary: Update review
+      tags:
+      - Reviews
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  content:
+                    type: string
+                  user_id:
+                    type: integer
+                  reviewable_id:
+                    type: integer
+                  reviewable_type:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                example:
+                  id: 1
+                  title: accusamus
+                  content: Ipsa est debitis. Sed assumenda ipsa. Voluptatibus dignissimos
+                    perferendis.
+                  user_id: 29
+                  reviewable_id: 4
+                  reviewable_type: Place
+                  created_at: '2024-07-12T17:49:53.375Z'
+                  updated_at: '2024-07-12T17:49:53.375Z'
+        '422':
+          description: Without title
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: array
+                    items:
+                      type: string
+                example:
+                  title:
+                  - can't be blank
+        '404':
+          description: Review not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Review doesn't exist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+              required:
+              - title
+  "/users/{id}":
+    get:
+      summary: Show user
+      tags:
+      - Users
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Show user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  first_name:
+                    type: string
+                  last_name:
+                    type: string
+                  handle:
+                    type: string
+                  password:
+                    type: string
+                    nullable: true
+                  password_digest:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                  photos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        url:
+                          type: string
+                example:
+                  id: 4059
+                  first_name: Korey
+                  last_name: Wunsch
+                  handle: Paige
+                  created_at: '2024-07-12T17:49:53.375Z'
+                  updated_at: '2024-07-12T17:49:53.375Z'
+                  photos:
+                  - id: 332
+                    url: "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg"
+        '401':
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Decode error
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: User doesn't exist
+  "/users/{id}/reviews":
+    get:
+      summary: Collection of user reviews
+      tags:
+      - Users
+      parameters:
+      - name: authorization
+        in: header
+        required: true
+        description: Authorization token
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Collection reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    content:
+                      type: string
+                    user_id:
+                      type: integer
+                    reviewable_id:
+                      type: integer
+                      description: Id review or place
+                    reviewable_type:
+                      type: string
+                      description: Review or Place
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+                  required:
+                  - id
+                  - title
+                  - content
+                  - user_id
+                  - reviewable_id
+                  - reviewable_type
+                  - created_at
+                  - updated_at
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: User doesn't exist
+servers:
+- url: http://localhost:3000
+  description: Local server

@@ -4,7 +4,7 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: historica
   password: historica
-  host: localhost
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
   port: 5432
 
 development:
@@ -18,5 +18,5 @@ test:
 production:
   <<: *default
   database: historica_production
-  username: geocoded
+  username: historica
   password: <%= ENV["HISTORICA_DATABASE_PASSWORD"] %>

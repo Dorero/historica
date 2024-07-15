@@ -28,7 +28,13 @@
 /tmp/storage/*
 !/tmp/storage/
 !/tmp/storage/.keep
+public/uploads
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 .idea
+redis_data/
+
+/config/credentials/test.key
+
+/config/credentials/development.key
