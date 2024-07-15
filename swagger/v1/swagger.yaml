@@ -276,9 +276,12 @@ paths:
                   type: string
                   format: binary
                   description: 'Valid image extension: jpg, jpeg, png, webp'
-                image_for_id:
+                imageable_id:
                   type: integer
                   description: Id user or place
+                imageable_type:
+                  type: string
+                  description: User or Place
               required:
               - image
               - image_for_id
@@ -786,8 +789,12 @@ paths:
                       type: string
                     user_id:
                       type: integer
-                    place_id:
+                    reviewable_id:
                       type: integer
+                      description: Id review or place
+                    reviewable_type:
+                      type: string
+                      description: Review or Place
                     created_at:
                       type: string
                       format: date-time
@@ -799,7 +806,8 @@ paths:
                   - title
                   - content
                   - user_id
-                  - place_id
+                  - reviewable_id
+                  - reviewable_type
                   - created_at
                   - updated_at
         '404':
@@ -823,7 +831,7 @@ paths:
           type: string
       responses:
         '201':
-          description: Create review
+          description: Create review with review parent type
           content:
             application/json:
               schema:
@@ -837,8 +845,10 @@ paths:
                     type: string
                   user_id:
                     type: integer
-                  place_id:
+                  reviewable_id:
                     type: integer
+                  reviewable_type:
+                    type: string
                   created_at:
                     type: string
                     format: date-time
@@ -851,7 +861,8 @@ paths:
                   content: Ipsa est debitis. Sed assumenda ipsa. Voluptatibus dignissimos
                     perferendis.
                   user_id: 29
-                  place_id: 4
+                  reviewable_id: 4
+                  type: Place
                   created_at: '2024-07-12T17:49:53.375Z'
                   updated_at: '2024-07-12T17:49:53.375Z'
         '422':
@@ -876,12 +887,12 @@ paths:
                 type: string
                 example: Decode error
         '404':
-          description: Place not found
+          description: Parent, review type, not found
           content:
             application/json:
               schema:
                 type: string
-                example: Place doesn't exist
+                example: Parent review doesn't exist
       requestBody:
         content:
           application/json:
@@ -890,8 +901,12 @@ paths:
               properties:
                 user_id:
                   type: integer
-                place_id:
+                reviewable_id:
                   type: integer
+                  description: Id review or place
+                reviewable_type:
+                  type: string
+                  description: Review or Place
                 title:
                   type: string
                 content:
@@ -899,7 +914,8 @@ paths:
               required:
               - title
               - user_id
-              - place_id
+              - reviewable_id
+              - reviewable_type
   "/reviews/{id}":
     delete:
       summary: Delete review
@@ -964,8 +980,10 @@ paths:
                     type: string
                   user_id:
                     type: integer
-                  place_id:
+                  reviewable_id:
                     type: integer
+                  reviewable_type:
+                    type: string
                   created_at:
                     type: string
                     format: date-time
@@ -978,7 +996,8 @@ paths:
                   content: Ipsa est debitis. Sed assumenda ipsa. Voluptatibus dignissimos
                     perferendis.
                   user_id: 29
-                  place_id: 4
+                  reviewable_id: 4
+                  reviewable_type: Place
                   created_at: '2024-07-12T17:49:53.375Z'
                   updated_at: '2024-07-12T17:49:53.375Z'
         '422':
@@ -1126,8 +1145,12 @@ paths:
                       type: string
                     user_id:
                       type: integer
-                    place_id:
+                    reviewable_id:
                       type: integer
+                      description: Id review or place
+                    reviewable_type:
+                      type: string
+                      description: Review or Place
                     created_at:
                       type: string
                       format: date-time
@@ -1139,7 +1162,8 @@ paths:
                   - title
                   - content
                   - user_id
-                  - place_id
+                  - reviewable_id
+                  - reviewable_type
                   - created_at
                   - updated_at
         '404':

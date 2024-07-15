@@ -37,10 +37,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_13_062631) do
     t.string "title"
     t.text "content"
     t.bigint "user_id"
-    t.bigint "place_id"
+    t.string "reviewable_type"
+    t.bigint "reviewable_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["place_id"], name: "index_reviews_on_place_id"
+    t.index ["reviewable_type", "reviewable_id"], name: "index_reviews_on_reviewable"
     t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 

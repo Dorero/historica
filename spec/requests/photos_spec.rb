@@ -16,7 +16,8 @@ RSpec.describe "Photos", type: :request do
         type: :object,
         properties: {
           image: { type: :string, format: :binary, description: 'Valid image extension: jpg, jpeg, png, webp' },
-          image_for_id: { type: :integer, description: 'Id user or place' }
+          imageable_id: { type: :integer, description: 'Id user or place' },
+          imageable_type: { type: :string, description: "User or Place"}
         },
         required: %w[image image_for_id]
       }
@@ -66,12 +67,14 @@ RSpec.describe "Photos", type: :request do
 
         let(:photo) { {
           image: fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg'),
-          image_for_id: user.id
+          imageable_id: user.id,
+          imageable_type: "User"
         } }
 
         run_test! do |response|
           data = JSON(response.body)
           expect(PromoteJob.jobs.size).to eq(1)
+          expect(data["imageable_id"]).to eq(user.id)
           expect(data["imageable_type"]).to eq("User")
           expect(data["url"]).not_to eq(nil)
           expect(response).to have_http_status(:created)
@@ -122,13 +125,16 @@ RSpec.describe "Photos", type: :request do
                  url: "/uploads/store/5aa6548a0c0a2b44b9979f4d9391ab3a.jpeg"
                }
 
+        let!(:place) { create(:place) }
         let(:photo) { {
           image: fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg'),
-          image_for_id: create(:place).id
+          imageable_id: place.id,
+          imageable_type: "Place"
         } }
 
         run_test! do |response|
           data = JSON(response.body)
+          expect(data["imageable_id"]).to eq(place.id)
           expect(data["imageable_type"]).to eq("Place")
           expect(data["url"]).not_to eq(nil)
           expect(PromoteJob.jobs.size).to eq(1)
@@ -143,7 +149,8 @@ RSpec.describe "Photos", type: :request do
 
         let(:photo) { {
           image: fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg'),
-          image_for_id: -1
+          imageable_id: -1,
+          imageable_type: ""
         } }
 
         run_test! do |response|
@@ -175,7 +182,8 @@ RSpec.describe "Photos", type: :request do
 
         let(:photo) { {
           image: fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.pdf'), 'image/jpeg'),
-          image_for_id: user.id
+          imageable_id: user.id,
+          imageable_type: "User"
         } }
 
         run_test! do |response|
@@ -192,7 +200,8 @@ RSpec.describe "Photos", type: :request do
 
         let(:photo) { {
           image: fixture_file_upload(Rails.root.join('spec', 'fixtures', 'images.jpeg'), 'image/jpeg'),
-          image_for_id: user.id
+          imageable_id: user.id,
+          imageable_type: "Place"
         } }
 
         run_test! do |response|

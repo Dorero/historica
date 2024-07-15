@@ -15,21 +15,23 @@ RSpec.describe "Reviews", type: :request do
         type: :object,
         properties: {
           user_id: { type: :integer },
-          place_id: { type: :integer },
+          reviewable_id: { type: :integer, description: "Id review or place" },
+          reviewable_type: { type: :string, description: "Review or Place" },
           title: { type: :string },
           content: { type: :string }
         },
-        required: ['title', 'user_id', 'place_id']
+        required: ['title', 'user_id', 'reviewable_id', 'reviewable_type']
       }
 
-      response '201', "Create review" do
+      response '201', "Create review with place parent type" do
         schema type: :object,
                properties: {
                  id: { type: :integer },
                  title: { type: :string },
                  content: { type: :string },
                  user_id: { type: :integer },
-                 place_id: { type: :integer },
+                 reviewable_id: { type: :integer },
+                 reviewable_type: { type: :string },
                  created_at: { type: :string, format: 'date-time' },
                  updated_at: { type: :string, format: 'date-time' },
                },
@@ -38,19 +40,57 @@ RSpec.describe "Reviews", type: :request do
                  "title": "accusamus",
                  "content": "Ipsa est debitis. Sed assumenda ipsa. Voluptatibus dignissimos perferendis.",
                  "user_id": 29,
-                 "place_id": 4,
+                 "reviewable_id": 4,
+                 "type": "Place",
                  "created_at": "2024-07-12T17:49:53.375Z",
                  "updated_at": "2024-07-12T17:49:53.375Z",
                }
 
-        let(:review) { build(:review, user_id: user.id, place_id: create(:place).id) }
+        let(:review) { build(:review, user_id: user.id, reviewable_id: create(:place).id, reviewable_type: "Place") }
 
         run_test! do |response|
           data = JSON(response.body)
           expect(data["title"]).to eq(review.title)
           expect(data["content"]).to eq(review.content)
           expect(data["user_id"]).to eq(review.user_id)
-          expect(data["place_id"]).to eq(review.place_id)
+          expect(data["reviewable_id"]).to eq(review.reviewable_id)
+          expect(data["reviewable_type"]).to eq(review.reviewable_type)
+          expect(response).to have_http_status(:created)
+        end
+      end
+
+      response '201', "Create review with review parent type" do
+        schema type: :object,
+               properties: {
+                 id: { type: :integer },
+                 title: { type: :string },
+                 content: { type: :string },
+                 user_id: { type: :integer },
+                 reviewable_id: { type: :integer },
+                 reviewable_type: { type: :string },
+                 created_at: { type: :string, format: 'date-time' },
+                 updated_at: { type: :string, format: 'date-time' },
+               },
+               example: {
+                 "id": 1,
+                 "title": "accusamus",
+                 "content": "Ipsa est debitis. Sed assumenda ipsa. Voluptatibus dignissimos perferendis.",
+                 "user_id": 29,
+                 "reviewable_id": 4,
+                 "type": "Place",
+                 "created_at": "2024-07-12T17:49:53.375Z",
+                 "updated_at": "2024-07-12T17:49:53.375Z",
+               }
+
+        let(:review) { build(:review, user_id: user.id, reviewable_id: create(:review).id, reviewable_type: "Review") }
+
+        run_test! do |response|
+          data = JSON(response.body)
+          expect(data["title"]).to eq(review.title)
+          expect(data["content"]).to eq(review.content)
+          expect(data["user_id"]).to eq(review.user_id)
+          expect(data["reviewable_id"]).to eq(review.reviewable_id)
+          expect(data["reviewable_type"]).to eq(review.reviewable_type)
           expect(response).to have_http_status(:created)
         end
       end
@@ -64,7 +104,7 @@ RSpec.describe "Reviews", type: :request do
                  "title": ["can't be blank"]
                }
 
-        let(:review) { build(:review, user_id: user.id, place_id: create(:place).id, title: "") }
+        let(:review) { build(:review, user_id: user.id, reviewable_id: create(:place).id, reviewable_type: "Place", title: "") }
 
         run_test! do |response|
           expect(JSON(response.body)["errors"]["title"].first).to eq("can't be blank")
@@ -76,7 +116,7 @@ RSpec.describe "Reviews", type: :request do
         schema type: :string, example: "Decode error"
 
         let(:authorization) { "Bearer invalid token" }
-        let(:review) { build(:review, user_id: user.id, place_id: create(:place).id) }
+        let(:review) { build(:review, user_id: user.id, reviewable_id: create(:place).id, reviewable_type: "Place") }
 
         run_test! do |response|
           expect(response).to have_http_status(:unauthorized)
@@ -86,7 +126,7 @@ RSpec.describe "Reviews", type: :request do
       response '404', "User not found" do
         schema type: :string, example: "User doesn't exist"
 
-        let(:review) { build(:review, user_id: -1, place_id: create(:place).id) }
+        let(:review) { build(:review, user_id: -1, reviewable_id: create(:place).id, reviewable_type: "Place") }
 
         run_test! do |response|
           expect(response.body).to eq("User doesn't exist")
@@ -94,13 +134,24 @@ RSpec.describe "Reviews", type: :request do
         end
       end
 
-      response '404', "Place not found" do
-        schema type: :string, example: "Place doesn't exist"
+      response '404', "Parent, place type, not found" do
+        schema type: :string, example: "Parent review doesn't exist"
 
-        let(:review) { build(:review, user_id: user.id, place_id: -1) }
+        let(:review) { build(:review, user_id: user.id, reviewable_id: -1, reviewable_type: "Place") }
 
         run_test! do |response|
-          expect(response.body).to eq("Place doesn't exist")
+          expect(response.body).to eq("Parent review doesn't exist")
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+
+      response '404', "Parent, review type, not found" do
+        schema type: :string, example: "Parent review doesn't exist"
+
+        let(:review) { build(:review, user_id: user.id, reviewable_id: -1, reviewable_type: "Review") }
+
+        run_test! do |response|
+          expect(response.body).to eq("Parent review doesn't exist")
           expect(response).to have_http_status(:not_found)
         end
       end
@@ -159,7 +210,8 @@ RSpec.describe "Reviews", type: :request do
                  title: { type: :string },
                  content: { type: :string },
                  user_id: { type: :integer },
-                 place_id: { type: :integer },
+                 reviewable_id: { type: :integer },
+                 reviewable_type: { type: :string },
                  created_at: { type: :string, format: 'date-time' },
                  updated_at: { type: :string, format: 'date-time' },
                },
@@ -168,12 +220,13 @@ RSpec.describe "Reviews", type: :request do
                  "title": "accusamus",
                  "content": "Ipsa est debitis. Sed assumenda ipsa. Voluptatibus dignissimos perferendis.",
                  "user_id": 29,
-                 "place_id": 4,
+                 "reviewable_id": 4,
+                 "reviewable_type": "Place",
                  "created_at": "2024-07-12T17:49:53.375Z",
                  "updated_at": "2024-07-12T17:49:53.375Z",
                }
 
-        let!(:created_review) { create(:review)}
+        let!(:created_review) { create(:review) }
 
         let(:id) { created_review.id }
 
@@ -184,7 +237,8 @@ RSpec.describe "Reviews", type: :request do
           expect(data["title"]).to eq(review.title)
           expect(data["content"]).to eq(review.content)
           expect(data["user_id"]).to eq(created_review.user_id)
-          expect(data["place_id"]).to eq(created_review.place_id)
+          expect(data["reviewable_id"]).to eq(created_review.reviewable_id)
+          expect(data["reviewable_type"]).to eq(created_review.reviewable_type)
           expect(response).to have_http_status(:ok)
         end
       end
@@ -198,8 +252,7 @@ RSpec.describe "Reviews", type: :request do
                  "title": ["can't be blank"]
                }
 
-
-        let!(:created_review) { create(:review)}
+        let!(:created_review) { create(:review) }
 
         let(:id) { created_review.id }
         let(:review) { build(:review, title: "") }
@@ -209,7 +262,6 @@ RSpec.describe "Reviews", type: :request do
           expect(response).to have_http_status(:unprocessable_content)
         end
       end
-
 
       response '404', "Review not found" do
         schema type: :string, example: "Review doesn't exist"

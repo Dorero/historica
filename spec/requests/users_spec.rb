@@ -96,15 +96,16 @@ RSpec.describe "Users", type: :request do
                    title: { type: :string },
                    content: { type: :string },
                    user_id: { type: :integer },
-                   place_id: { type: :integer },
+                   reviewable_id: { type: :integer, description: "Id review or place" },
+                   reviewable_type: { type: :string, description: "Review or Place" },
                    created_at: { type: :string, format: 'date-time' },
                    updated_at: { type: :string, format: 'date-time' }
                  },
-                 required: ['id', 'title', 'content', 'user_id', 'place_id', 'created_at', 'updated_at']
+                 required: ['id', 'title', 'content', 'user_id', 'reviewable_id', 'reviewable_type', 'created_at', 'updated_at']
                }
 
         let(:place) { create(:place) }
-        before { create_list(:review, 2, user_id: user.id, place_id: place.id) }
+        before { create_list(:review, 2, user_id: user.id, reviewable_id: place.id, reviewable_type: "Place") }
         let(:id) { user.id }
 
         run_test! do |response|

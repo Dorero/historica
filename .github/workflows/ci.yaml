@@ -99,6 +99,3 @@ jobs:
       - name: Run tests
         run: |
           bundle exec rspec
-
-      - name: Generate coverage badge
-        run: bundle exec rake coverage:generate_badge
