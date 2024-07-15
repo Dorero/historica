@@ -1,26 +1,26 @@
 version: '3.8'
 
 services:
-  api:
-    build: .
-    command: bundle exec rails server -b 0.0.0.0
-    volumes:
-      - .:/app
-      - gem_cache:/usr/local/bundle
-    ports:
-      - "3000:3000"
-    depends_on:
-      - postgres
-      - redis
-      - meilisearch
-    environment:
-      RAILS_ENV: development
-      DB_HOST: postgres
-      MEILISEARCH_HOST: http://meilisearch:7700
-      SIDEKIQ_SERVER: redis://redis:6379/0
-      SIDEKIQ_CLIENT: redis://redis:6379/0
-    networks:
-      - historica_network
+#  api:
+#    build: .
+#    command: bundle exec rails server -b 0.0.0.0
+#    volumes:
+#      - .:/app
+#      - gem_cache:/usr/local/bundle
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - postgres
+#      - redis
+#      - meilisearch
+#    environment:
+#      RAILS_ENV: development
+#      DB_HOST: postgres
+#      MEILISEARCH_HOST: http://meilisearch:7700
+#      SIDEKIQ_SERVER: redis://redis:6379/0
+#      SIDEKIQ_CLIENT: redis://redis:6379/0
+#    networks:
+#      - historica_network
 
   postgres:
     image: postgres:16.0-alpine

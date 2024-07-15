@@ -3,6 +3,7 @@ FactoryBot.define do
     title { Faker::Lorem.word }
     content { Faker::Lorem.paragraph }
     user
-    place
+
+    association :reviewable, factory: :place
   end
 end

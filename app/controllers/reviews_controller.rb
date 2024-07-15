@@ -3,21 +3,17 @@
 class ReviewsController < ApplicationController
   def create
     return render plain: "User doesn't exist", status: :not_found unless User.exists?(permit_params[:user_id])
-    return render plain: "Place doesn't exist", status: :not_found unless Place.exists?(permit_params[:place_id])
 
-    review = Review.create(permit_params)
+    reviewable = build_reviewable(permit_params)
+    return render plain: "Parent review doesn't exist", status: :not_found if reviewable.nil?
 
-    if review.save
-      render json: review, status: :created
-    else
-      render json: { errors: review.errors.messages }, status: :unprocessable_content
-    end
+    build_response(Review.create(permit_params.except(:reviewable_id, :reviewable_type).merge(reviewable:)))
   end
 
   def update
     return render plain: "Review doesn't exist", status: :not_found unless Review.exists?(params[:id])
 
-    review = Review.update(params[:id], title: params[:title], content: params[:content])
+    review = Review.update(params[:id], title: permit_params[:title], content: permit_params[:content])
 
     if review.save
       render json: review, status: :ok
@@ -36,6 +32,26 @@ class ReviewsController < ApplicationController
   private
 
   def permit_params
-    params.require(:review).permit(:user_id, :place_id, :title, :content)
+    params.require(:review).permit(:user_id, :reviewable_id, :reviewable_type, :title, :content)
+  end
+
+  def build_reviewable(params)
+    if params[:reviewable_type] == 'Review'
+      return nil unless Review.exists?(params[:reviewable_id])
+
+      Review.find(params[:reviewable_id])
+    elsif params[:reviewable_type] == 'Place'
+      return nil unless Place.exists?(params[:reviewable_id])
+
+      Place.find(params[:reviewable_id])
+    end
+  end
+
+  def build_response(review)
+    if review.save
+      render json: review, status: :created
+    else
+      render json: { errors: review.errors.messages }, status: :unprocessable_content
+    end
   end
 end

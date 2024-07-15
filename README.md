@@ -33,7 +33,7 @@ Requirements: docker and docker-compose must be installed on your machine.
 ```
 git clone https://github.com/Dorero/historica.git
 cd historica
-docker-compose up
+docker compose up
 ```
 Meilisearch admin panel is located at http://localhost:7700/ \
 Sidekiq ui is located at http://localhost:3000/sidekiq \
